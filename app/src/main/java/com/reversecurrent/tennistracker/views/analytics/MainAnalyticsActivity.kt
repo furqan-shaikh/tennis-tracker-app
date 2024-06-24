@@ -56,6 +56,7 @@ fun AnalyticsScreenLayout() {
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         AddButton("View Outstanding Payments", Icons.Default.KeyboardArrowUp)
+        AddButton("View Outstanding Payments For Courts", Icons.Default.KeyboardArrowUp)
     }
 }
 
@@ -66,6 +67,7 @@ fun AddButton(text: String, icon: ImageVector) {
         onClick = {
             when(text){
                 "View Outstanding Payments" -> navigateToViewOutstandingPaymentsActivity(context=context)
+                "View Outstanding Payments For Courts" -> navigateToViewOutstandingPaymentsForCourtsActivity(context=context)
             }
         },
         modifier = Modifier.fillMaxWidth(),
@@ -80,5 +82,10 @@ fun AddButton(text: String, icon: ImageVector) {
 
 fun navigateToViewOutstandingPaymentsActivity(context: android.content.Context) {
     val intent = Intent(context, OutstandingPaymentsActivity::class.java)
+    context.startActivity(intent)
+}
+
+fun navigateToViewOutstandingPaymentsForCourtsActivity(context: android.content.Context) {
+    val intent = Intent(context, OutstandingPaymentsCourtActivity::class.java)
     context.startActivity(intent)
 }

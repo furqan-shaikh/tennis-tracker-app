@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Query
 import androidx.room.Upsert
 import com.reversecurrent.tennistracker.dal.VENUE_TABLE_NAME_COLUMN
+import com.reversecurrent.tennistracker.dal.entities.PlayerEntity
 import com.reversecurrent.tennistracker.dal.entities.VenueEntity
 
 @Dao
@@ -17,4 +18,7 @@ interface VenueDao {
 
     @Query("SELECT * FROM venues order by $VENUE_TABLE_NAME_COLUMN asc")
     fun getAll(): List<VenueEntity>
+
+    @Query("SELECT * FROM venues WHERE uid=:uid")
+    suspend fun getById(uid: Long): VenueEntity
 }

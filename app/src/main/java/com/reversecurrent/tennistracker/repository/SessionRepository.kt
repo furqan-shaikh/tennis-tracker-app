@@ -6,7 +6,9 @@ import com.reversecurrent.tennistracker.dal.database.DatabaseAccessor
 import com.reversecurrent.tennistracker.dal.entities.PlayerEntity
 import com.reversecurrent.tennistracker.dal.entities.SessionEntity
 import com.reversecurrent.tennistracker.dal.entities.SessionPaymentEntity
+import com.reversecurrent.tennistracker.dal.entities.VenueEntity
 import com.reversecurrent.tennistracker.models.OutstandingPayment
+import com.reversecurrent.tennistracker.models.OutstandingPaymentCourt
 import com.reversecurrent.tennistracker.models.SESSION_DATE_FORMAT
 import com.reversecurrent.tennistracker.models.Session
 import com.reversecurrent.tennistracker.utils.fromEpoch
@@ -79,5 +81,26 @@ class SessionRepository {
 
         }
         return outstandingPayments
+    }
+
+    @WorkerThread
+    suspend fun getAllOutstandingPaymentsForCourts(context: Any): List<OutstandingPaymentCourt> {
+        val outstandingSessionPaymentsForCourts: List<SessionEntity> = DatabaseAccessor.getDatabase(applicationContext = context)
+            .sessionDao().getAllOutstandingPaymentsForCourts()
+
+        val outstandingPaymentsCourts = mutableListOf<OutstandingPaymentCourt>()
+        for(outstandingSessionPaymentForCourt in outstandingSessionPaymentsForCourts){
+            val venue: VenueEntity = DatabaseAccessor.getDatabase(applicationContext = context)
+                .venueDao().getById(outstandingSessionPaymentForCourt.venueId)
+
+
+            outstandingPaymentsCourts.add(OutstandingPaymentCourt(
+                sessionDate = fromEpoch(outstandingSessionPaymentForCourt.sessionDate, SESSION_DATE_FORMAT),
+                paymentAmount = outstandingSessionPaymentForCourt.sessionCost,
+                venueName = venue.venueName
+            ))
+
+        }
+        return outstandingPaymentsCourts
     }
 }

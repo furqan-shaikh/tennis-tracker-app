@@ -5,7 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
-import com.reversecurrent.tennistracker.dal.entities.PlayerEntity
+import com.reversecurrent.tennistracker.dal.SESSION_TABLE_PAYMENT_HAS_PAID_COLUMN
 import com.reversecurrent.tennistracker.dal.entities.SessionEntity
 import com.reversecurrent.tennistracker.dal.entities.SessionPlayerJoinEntity
 
@@ -32,4 +32,7 @@ interface SessionDao {
 
     @Query("SELECT * FROM sessions WHERE uid=:uid LIMIT 1")
     suspend fun getById(uid: Long): SessionEntity
+
+    @Query("SELECT * FROM sessions WHERE $SESSION_TABLE_PAYMENT_HAS_PAID_COLUMN = 0")
+    suspend fun getAllOutstandingPaymentsForCourts(): List<SessionEntity>
 }

@@ -24,6 +24,7 @@
         <activity android:name=".views.venues.ListVenuesActivity"/>
         <activity android:name=".views.analytics.MainAnalyticsActivity"/>
         <activity android:name=".views.analytics.OutstandingPaymentsActivity"/>
+        <activity android:name=".views.analytics.OutstandingPaymentsCourtActivity"/>
         <activity
             android:name=".views.MainActivity"
             android:exported="true"

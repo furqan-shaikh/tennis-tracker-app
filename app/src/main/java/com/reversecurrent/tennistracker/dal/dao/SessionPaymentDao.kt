@@ -13,4 +13,6 @@ interface SessionPaymentDao {
 
     @Query("SELECT * FROM session_payments WHERE $SESSION_PAYMENT_TABLE_HAS_PAID_COLUMN = 0")
     suspend fun getAllOutstandingPayments(): List<SessionPaymentEntity>
+
+
 }

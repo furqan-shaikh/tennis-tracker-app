@@ -114,4 +114,10 @@ data class OutstandingPayment (
     val playerName: String,
 )
 
+data class OutstandingPaymentCourt (
+    val paymentAmount: Float = 0.0f,
+    val sessionDate: String,
+    val venueName: String,
+)
+
 const val SESSION_DATE_FORMAT = "yyyy-MM-dd HH:mm"
