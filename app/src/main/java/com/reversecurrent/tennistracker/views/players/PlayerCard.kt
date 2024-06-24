@@ -1,4 +1,4 @@
-package com.reversecurrent.tennistracker.views
+package com.reversecurrent.tennistracker.views.players
 
 import android.content.Context
 import androidx.compose.foundation.border
@@ -21,6 +21,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.reversecurrent.tennistracker.models.Player
+import com.reversecurrent.tennistracker.views.widgets.CheckboxWidget
+import com.reversecurrent.tennistracker.views.widgets.TextWidget
 
 const val PLAYER_NAME_LABEL = "Player Name: "
 const val PLAYER_MOBILE_NUMBER_LABEL = "Mobile Number: "
@@ -62,7 +64,7 @@ fun CardContent(player: Player) {
     TextWidget(label = PLAYER_NAME_LABEL, value = player.displayName)
     TextWidget(label = PLAYER_MOBILE_NUMBER_LABEL, value = player.mobileNumber)
     TextWidget(label = PLAYER_LEVEL_LABEL, value = player.playingLevel)
-    CheckboxWidget(label=PLAYER_PLAYED_BEFORE_LABEL, value=player.playedBefore)
+    CheckboxWidget(label= PLAYER_PLAYED_BEFORE_LABEL, value=player.playedBefore)
 }
 @Composable
 fun ActionButtons(player: Player, context: Context, onEditPlayerClick: (Context, Player) -> Unit, onDeletePlayerClick: (Player) -> Unit) {

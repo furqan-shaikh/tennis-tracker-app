@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import com.reversecurrent.tennistracker.ui.theme.TennisTrackerTheme
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import com.reversecurrent.tennistracker.views.analytics.MainAnalyticsActivity
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,7 +59,7 @@ fun MainScreenLayout() {
     ) {
         TennisTrackerButton("Add", Icons.Default.Add, "Add")
         TennisTrackerButton("List", Icons.Default.List, "List")
-        TennisTrackerButton("Analytics", Icons.Default.List, "List")
+        TennisTrackerButton("Analytics", Icons.Default.List, "Analytics")
     }
 }
 
@@ -70,6 +71,7 @@ fun TennisTrackerButton(text: String, icon: ImageVector, activity_type: String) 
             when(activity_type){
                 "Add" -> navigateToAddEntitiesActivity(context=context)
                 "List" -> navigateToListEntitiesActivity(context=context)
+                "Analytics" -> navigateToAnalyticsActivity(context=context)
             }
         },
         modifier = Modifier.fillMaxWidth(),
@@ -90,6 +92,11 @@ fun navigateToAddEntitiesActivity(context: android.content.Context) {
 
 fun navigateToListEntitiesActivity(context: android.content.Context) {
     val intent = Intent(context, ListEntitiesActivity::class.java)
+    context.startActivity(intent)
+}
+
+fun navigateToAnalyticsActivity(context: android.content.Context) {
+    val intent = Intent(context, MainAnalyticsActivity::class.java)
     context.startActivity(intent)
 }
 

@@ -1,4 +1,4 @@
-package com.reversecurrent.tennistracker.views
+package com.reversecurrent.tennistracker.views.venues
 
 import android.content.Context
 import android.content.Intent

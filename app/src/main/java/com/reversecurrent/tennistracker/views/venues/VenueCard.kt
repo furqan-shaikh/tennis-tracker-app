@@ -1,4 +1,4 @@
-package com.reversecurrent.tennistracker.views
+package com.reversecurrent.tennistracker.views.venues
 
 import android.content.Context
 import androidx.compose.foundation.layout.Column
@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.reversecurrent.tennistracker.models.Venue
+import com.reversecurrent.tennistracker.views.widgets.TextWidget
 
 const val VENUE_CARD_NAME_LABEL = "Venue Name: "
 const val VENUE_MOBILE_NUMBER_LABEL = "Primary Contact Mobile: "

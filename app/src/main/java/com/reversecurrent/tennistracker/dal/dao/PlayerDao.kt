@@ -20,4 +20,7 @@ interface PlayerDao {
 
     @Query("SELECT * FROM players order by $PLAYER_TABLE_NAME_COLUMN asc")
     fun getAll(): List<PlayerEntity>
+
+    @Query("SELECT * FROM players WHERE uid=:uid")
+    suspend fun getById(uid: Long): PlayerEntity
 }

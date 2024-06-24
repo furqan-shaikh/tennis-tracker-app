@@ -2,9 +2,10 @@ package com.reversecurrent.tennistracker.dal.entities
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import com.reversecurrent.tennistracker.dal.SESSION_PLAYER_JOIN_TABLE_NAME
 
 @Entity(
-    tableName = "player_session_join",
+    tableName = SESSION_PLAYER_JOIN_TABLE_NAME,
     primaryKeys = ["playerId", "sessionId"],
     foreignKeys = [
         ForeignKey(

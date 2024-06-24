@@ -1,4 +1,4 @@
-package com.reversecurrent.tennistracker.views
+package com.reversecurrent.tennistracker.views.analytics
 
 import android.content.Intent
 import android.os.Bundle
@@ -13,41 +13,33 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Send
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.reversecurrent.tennistracker.ui.theme.TennisTrackerTheme
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import com.reversecurrent.tennistracker.models.PLAYER_ACTION_INTENT_EXTRA
-import com.reversecurrent.tennistracker.models.PLAYER_INTENT_EXTRA
-import com.reversecurrent.tennistracker.models.PlayerActionEnum
-import com.reversecurrent.tennistracker.models.getEmptyPlayer
+import com.reversecurrent.tennistracker.views.players.AddPlayerActivity
 
-//const val TEXT_IMPORT = "Import from Existing Contacts"
-const val TEXT_MANUAL = "Manual Add"
-
-class AddPlayerActivity : ComponentActivity() {
+class MainAnalyticsActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContent {
             TennisTrackerTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    AddPlayerLayout()
+                    AnalyticsScreenLayout()
                 }
             }
         }
@@ -56,25 +48,24 @@ class AddPlayerActivity : ComponentActivity() {
 
 @Preview
 @Composable
-fun AddPlayerLayout() {
+fun AnalyticsScreenLayout() {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 16.dp, vertical = 16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        AddPlayerButton("Import from Existing Contacts", Icons.Default.Send)
-        AddPlayerButton("Manual Add", Icons.Default.Person)
+        AddButton("View Outstanding Payments", Icons.Default.KeyboardArrowUp)
     }
 }
 
 @Composable
-fun AddPlayerButton(text: String, icon: ImageVector) {
+fun AddButton(text: String, icon: ImageVector) {
     val context = LocalContext.current
     Button(
         onClick = {
             when(text){
-                TEXT_MANUAL -> navigateToAddPlayerFromManualActivity(context=context)
+                "View Outstanding Payments" -> navigateToViewOutstandingPaymentsActivity(context=context)
             }
         },
         modifier = Modifier.fillMaxWidth(),
@@ -87,9 +78,7 @@ fun AddPlayerButton(text: String, icon: ImageVector) {
     }
 }
 
-fun navigateToAddPlayerFromManualActivity(context: android.content.Context) {
-    val intent = Intent(context, AddPlayerFromManualActivity::class.java)
-    intent.putExtra(PLAYER_INTENT_EXTRA, getEmptyPlayer())
-    intent.putExtra(PLAYER_ACTION_INTENT_EXTRA, PlayerActionEnum.ADD)
+fun navigateToViewOutstandingPaymentsActivity(context: android.content.Context) {
+    val intent = Intent(context, OutstandingPaymentsActivity::class.java)
     context.startActivity(intent)
 }

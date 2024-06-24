@@ -10,6 +10,9 @@ import com.reversecurrent.tennistracker.dal.SESSION_TABLE_NAME
 import com.reversecurrent.tennistracker.dal.SESSION_TABLE_NOTES_COLUMN
 import com.reversecurrent.tennistracker.dal.SESSION_TABLE_NUMBER_OF_SHOTS_PLAYED_COLUMN
 import com.reversecurrent.tennistracker.dal.SESSION_TABLE_NUMBER_OF_STEPS_COLUMN
+import com.reversecurrent.tennistracker.dal.SESSION_TABLE_PAYMENT_AMOUNT_DUE_COLUMN
+import com.reversecurrent.tennistracker.dal.SESSION_TABLE_PAYMENT_HAS_PAID_COLUMN
+import com.reversecurrent.tennistracker.dal.SESSION_TABLE_PAYMENT_PAID_DATE_COLUMN
 import com.reversecurrent.tennistracker.dal.SESSION_TABLE_PLAYING_FORMAT_COLUMN
 import com.reversecurrent.tennistracker.dal.SESSION_TABLE_PLAYING_STRUCTURE_COLUMN
 import com.reversecurrent.tennistracker.dal.SESSION_TABLE_QUALITY_OF_TENNIS_COLUMN
@@ -43,7 +46,12 @@ data class SessionEntity (
     @ColumnInfo(name = SESSION_TABLE_NUMBER_OF_STEPS_COLUMN) val sessionNumberOfSteps: Int,
     @ColumnInfo(name = SESSION_TABLE_NUMBER_OF_SHOTS_PLAYED_COLUMN) val sessionNumberOfShotsPlayed: Int,
 
-    @ColumnInfo(name = SESSION_TABLE_VENUE_ID_COLUMN) val venueId: Long // Foreign key column to venue
+    @ColumnInfo(name = SESSION_TABLE_VENUE_ID_COLUMN) val venueId: Long, // Foreign key column to venue
+
+    // Payment columns
+    @ColumnInfo(name = SESSION_TABLE_PAYMENT_AMOUNT_DUE_COLUMN) val sessionAmountDue: Float = 0f,
+    @ColumnInfo(name = SESSION_TABLE_PAYMENT_HAS_PAID_COLUMN) val sessionHasPaid: Boolean = false,
+    @ColumnInfo(name = SESSION_TABLE_PAYMENT_PAID_DATE_COLUMN) val sessionPaidDate: String = ""
 
     )
 

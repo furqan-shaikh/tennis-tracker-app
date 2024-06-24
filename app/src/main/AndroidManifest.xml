@@ -15,13 +15,15 @@
         tools:targetApi="31">
         <activity android:name=".views.AddEntitiesActivity"/>
         <activity android:name=".views.ListEntitiesActivity"/>
-        <activity android:name=".views.AddPlayerActivity"/>
-        <activity android:name=".views.AddPlayerFromContactsActivity"/>
-        <activity android:name=".views.AddPlayerFromManualActivity"/>
-        <activity android:name=".views.AddVenueActivity"/>
-        <activity android:name=".views.AddSessionActivity"/>
-        <activity android:name=".views.ListPlayersActivity"/>
-        <activity android:name=".views.ListVenuesActivity"/>
+        <activity android:name=".views.players.AddPlayerActivity"/>
+        <activity android:name=".views.players.AddPlayerFromContactsActivity"/>
+        <activity android:name=".views.players.AddPlayerFromManualActivity"/>
+        <activity android:name=".views.venues.AddVenueActivity"/>
+        <activity android:name=".views.sessions.AddSessionActivity"/>
+        <activity android:name=".views.players.ListPlayersActivity"/>
+        <activity android:name=".views.venues.ListVenuesActivity"/>
+        <activity android:name=".views.analytics.MainAnalyticsActivity"/>
+        <activity android:name=".views.analytics.OutstandingPaymentsActivity"/>
         <activity
             android:name=".views.MainActivity"
             android:exported="true"

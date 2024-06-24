@@ -2,6 +2,7 @@ package com.reversecurrent.tennistracker.models
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
+import java.util.Date
 
 const val PLAYER_INTENT_EXTRA = "player_extra"
 const val PLAYER_ACTION_INTENT_EXTRA = "player_action_extra"
@@ -82,6 +83,11 @@ data class Session (
     val sessionQualityOfTennis: String,
     val sessionNumberOfSteps: Int,
     val sessionNumberOfShotsPlayed: Int,
+    val sessionAmountDue: Float = 0f,
+    val sessionHasPaid: Boolean = false,
+    val sessionPaidDate: String = "",
+    val isSelfBooked: Boolean = false,
+    val sessionPayments: List<PlayerPayment> = emptyList(),
 
     val players: List<Long>,
     val venueId: Long,
@@ -90,10 +96,22 @@ data class Session (
 
 data class PlayerPayment (
     val playerName: String,
-    val playerId: Int,
-    val paymentAmount: Float,
-    val paymentDate: String,
-    val hasPaid: Boolean
+    val playerId: Long,
+    val paymentAmount: Float = 0.0f,
+    val paymentDate: String = Date().toString(),
+    val hasPaid: Boolean = false,
+)
+
+data class SelfPayment (
+    val paymentAmount: Float = 0.0f,
+    val paymentDate: String = Date().toString(),
+    val hasPaid: Boolean = false,
+)
+
+data class OutstandingPayment (
+    val paymentAmount: Float = 0.0f,
+    val sessionDate: String,
+    val playerName: String,
 )
 
 const val SESSION_DATE_FORMAT = "yyyy-MM-dd HH:mm"

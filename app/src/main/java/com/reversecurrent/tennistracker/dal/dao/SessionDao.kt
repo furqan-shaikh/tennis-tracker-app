@@ -3,7 +3,9 @@ package com.reversecurrent.tennistracker.dal.dao
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
+import androidx.room.Query
 import androidx.room.Transaction
+import com.reversecurrent.tennistracker.dal.entities.PlayerEntity
 import com.reversecurrent.tennistracker.dal.entities.SessionEntity
 import com.reversecurrent.tennistracker.dal.entities.SessionPlayerJoinEntity
 
@@ -16,7 +18,7 @@ interface SessionDao {
     suspend fun insertPlayerSessionJoin(join: SessionPlayerJoinEntity)
 
     @Transaction
-    suspend fun insertSessionWithPlayers(sessionEntity: SessionEntity, playerIds: List<Long>) {
+    suspend fun insertSessionWithPlayers(sessionEntity: SessionEntity, playerIds: List<Long>): Long {
         // Insert the session into the sessions table
         val sessionId = insertSession(sessionEntity)
 
@@ -24,5 +26,10 @@ interface SessionDao {
         playerIds.forEach { playerId ->
             insertPlayerSessionJoin(SessionPlayerJoinEntity(playerId, sessionId))
         }
+
+        return sessionId
     }
+
+    @Query("SELECT * FROM sessions WHERE uid=:uid LIMIT 1")
+    suspend fun getById(uid: Long): SessionEntity
 }

@@ -1,4 +1,4 @@
-package com.reversecurrent.tennistracker.views
+package com.reversecurrent.tennistracker.views.venues
 
 import android.os.Bundle
 import android.util.Log
@@ -56,6 +56,7 @@ import com.reversecurrent.tennistracker.models.Venue
 import com.reversecurrent.tennistracker.models.VenueActionEnum
 import com.reversecurrent.tennistracker.repository.VenueRepository
 import com.reversecurrent.tennistracker.ui.theme.TennisTrackerTheme
+import com.reversecurrent.tennistracker.views.players.navigateToParentActivity
 import kotlinx.coroutines.runBlocking
 
 const val VENUE_NAME_LABEL = "Venue Name"
@@ -76,6 +77,8 @@ class AddVenueActivity: ComponentActivity() {
         val venueActionEnum: VenueActionEnum? = intent.getSerializableExtra(
             VENUE_ACTION_INTENT_EXTRA
         ) as? VenueActionEnum
+        Log.i("Add Venue", venue.toString())
+
         setContent {
             TennisTrackerTheme {
                 Surface(
@@ -96,6 +99,7 @@ class AddVenueActivity: ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun AddVenueFormLayout(venue: Venue, actionType: VenueActionEnum) {
+        Log.i("Add Venue", venue.toString())
         val context = LocalContext.current
 
         // define state for each form element

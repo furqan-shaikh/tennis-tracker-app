@@ -1,4 +1,4 @@
-package com.reversecurrent.tennistracker.views
+package com.reversecurrent.tennistracker.views.sessions
 
 import android.os.Bundle
 import android.util.Log
@@ -67,6 +67,8 @@ import com.reversecurrent.tennistracker.repository.VenueRepository
 import com.reversecurrent.tennistracker.ui.theme.TennisTrackerTheme
 import com.reversecurrent.tennistracker.utils.safeStrToFloat
 import com.reversecurrent.tennistracker.utils.safeStrToInt
+import com.reversecurrent.tennistracker.views.players.NAME_LABEL
+import com.reversecurrent.tennistracker.views.players.navigateToParentActivity
 import kotlinx.coroutines.runBlocking
 
 // UI Labels defined here
@@ -87,6 +89,9 @@ const val SESSION_ADD_SESSION_BUTTON_LABEL = "Add Session"
 const val SESSION_BOOKED_BY_LABEL = "Booked By"
 const val SESSION_PLAYER_PAY_AMOUNT_LABEL = "Amount Due"
 const val SESSION_PLAYER_PAY_HAS_PAID_LABEL = "Has Paid"
+const val SESSION_PAID_TO_COURT = "Paid to Court?"
+const val SESSION_PAID_TO_COURT_DATE = "Paid to Court Date: yyyy-MM-dd"
+const val SESSION_PAYMENT_DATE = "Paid Date"
 
 
 class AddSessionActivity: ComponentActivity() {
@@ -105,37 +110,92 @@ class AddSessionActivity: ComponentActivity() {
     }
 
     @Composable
-    fun PlayerPaymentLayout(playerPayment: PlayerPayment) {
+    fun PlayerPaymentLayout(playerPayment: PlayerPayment, onChange: (playerPayment: PlayerPayment) -> Unit) {
         var playerName by remember { mutableStateOf(playerPayment.playerName) }
         var amountDue by remember { mutableFloatStateOf(playerPayment.paymentAmount) }
         var hasPaid by remember { mutableStateOf(playerPayment.hasPaid) }
+        var paymentDate by remember { mutableStateOf(playerPayment.paymentDate) }
         Column()
         {
-            OutlinedTextField(
-                label = { Text(text = NAME_LABEL)},
-                value = playerName,
-                onValueChange = { text -> playerName = text})
-            OutlinedTextField(
-                label = { Text(text = SESSION_PLAYER_PAY_AMOUNT_LABEL)},
-                value = amountDue.toString(),
-                onValueChange = { text -> amountDue = safeStrToFloat(text)})
-            OutlinedTextField(
-                label = { Text(text = NAME_LABEL)},
-                value = playerName,
-                onValueChange = { text -> playerName = text})
-            Row (
-                verticalAlignment = Alignment.CenterVertically,
-            )
-            {
-                Checkbox(
-                    checked = hasPaid,
-                    onCheckedChange = { isChecked -> hasPaid = isChecked})
-                Spacer(Modifier.size(6.dp))
-                Text(text = SESSION_PLAYER_PAY_HAS_PAID_LABEL)
-            }
+            ElevatedCard(
+                elevation = CardDefaults.cardElevation(
+                    defaultElevation = 6.dp
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+            ) {
+                OutlinedTextField(
+                    label = { Text(text = NAME_LABEL)},
+                    value = playerName,
+                    onValueChange = { text ->
+                        playerName = text
+                        onChange(playerPayment.copy(playerName = text))})
 
+                OutlinedTextField(
+                    label = { Text(text = SESSION_PLAYER_PAY_AMOUNT_LABEL)},
+                    value = amountDue.toString(),
+                    onValueChange = { text ->
+                        amountDue = safeStrToFloat(text)
+                        onChange(playerPayment.copy(paymentAmount = safeStrToFloat(text)))})
+
+                Row (
+                verticalAlignment = Alignment.CenterVertically,
+                )
+                {
+                    Checkbox(
+                        checked = hasPaid,
+                        onCheckedChange = { isChecked ->
+                            hasPaid = isChecked
+                            onChange(playerPayment.copy(hasPaid = isChecked))})
+                    Spacer(Modifier.size(6.dp))
+                    Text(text = SESSION_PLAYER_PAY_HAS_PAID_LABEL)
+                }
+                OutlinedTextField(
+                    label = { Text(text = SESSION_PAYMENT_DATE)},
+                    value = paymentDate,
+                    onValueChange = { text -> onChange(playerPayment.copy(paymentDate = text))})
+            }
         }
     }
+
+//    @Composable
+//    fun SelfPaymentLayout(amountDue: Float, hasPaid: Boolean, paymentDate: String) {
+////        var amountDue by remember { mutableFloatStateOf(playerPayment.paymentAmount) }
+////        var hasPaid by remember { mutableStateOf(playerPayment.hasPaid) }
+////        var paymentDate by remember { mutableStateOf(playerPayment.paymentDate) }
+//        Column()
+//        {
+//            ElevatedCard(
+//                elevation = CardDefaults.cardElevation(
+//                    defaultElevation = 6.dp
+//                ),
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(16.dp),
+//            ) {
+//                Row (
+//                    verticalAlignment = Alignment.CenterVertically,
+//                )
+//                {
+//                    Checkbox(
+//                        checked = hasPaid,
+//                        onCheckedChange = { isChecked -> hasPaid = isChecked})
+//                    Spacer(Modifier.size(6.dp))
+//                    Text(text = SESSION_PLAYER_PAY_HAS_PAID_LABEL)
+//                }
+//                OutlinedTextField(
+//                    label = { Text(text = SESSION_PAYMENT_DATE)},
+//                    value = paymentDate,
+//                    onValueChange = { text -> paymentDate = text})
+//
+//                OutlinedTextField(
+//                    label = { Text(text = SESSION_PLAYER_PAY_AMOUNT_LABEL)},
+//                    value = amountDue.toString(),
+//                    onValueChange = { text -> amountDue = safeStrToFloat(text)})
+//            }
+//        }
+//    }
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Preview
@@ -167,6 +227,14 @@ class AddSessionActivity: ComponentActivity() {
         var bookedBy by remember { mutableStateOf("") }
         var isBookedBySelf by remember { mutableStateOf(false) }
         var isBookedByExpanded by remember { mutableStateOf(false) }
+        var isPaidToCourt by remember { mutableStateOf(false)}
+        var paidToCourtData by remember { mutableStateOf("") }
+
+        var amountDue by remember { mutableFloatStateOf(0.0F) }
+        var hasPaid by remember { mutableStateOf(false) }
+        var paymentDate by remember { mutableStateOf("") }
+
+        var playerPayments by remember { mutableStateOf(emptyList<PlayerPayment>()) }
 
         LaunchedEffect(Unit) {
             runBlocking {
@@ -184,7 +252,7 @@ class AddSessionActivity: ComponentActivity() {
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Venue Name
+            // Session Date
             OutlinedTextField(
                 label = { Text(text = SESSION_DATE_LABEL) },
                 value = sessionDate,
@@ -194,7 +262,6 @@ class AddSessionActivity: ComponentActivity() {
                 label = { Text(text = SESSION_DURATION_LABEL) },
                 value = sessionDuration.toString(),
                 onValueChange = { text -> sessionDuration = safeStrToFloat(text) })
-
             // Select Players
             Column {
                 Text(text = SESSION_SELECT_PLAYERS_LABEL)
@@ -479,6 +546,75 @@ class AddSessionActivity: ComponentActivity() {
                     }
                 }
             }
+
+            if(isBookedBySelf) {
+                Column{
+                    selectedPlayers.forEach{player->
+                        val playerPayment=PlayerPayment(
+                            playerId=player.id,
+                            playerName=player.displayName
+                        )
+//                        playerPayments = playerPayments+playerPayment
+                        PlayerPaymentLayout(
+                            playerPayment=playerPayment,
+                            onChange={ modifiedPlayerPayment->
+                                Log.i("AddSessionActivity", modifiedPlayerPayment.toString())
+                                if(playerPayments.isEmpty()) {
+                                    playerPayments = playerPayments + getSelectedPlayersPayments(selectedPlayers)
+                                }
+                                playerPayments=playerPayments.map{
+                                    if(it.playerId == modifiedPlayerPayment.playerId) modifiedPlayerPayment else it
+                                }
+                                Log.i("AddSessionActivity", playerPayments.toString())
+                            }
+                        )
+                    }
+                }
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                )
+                {
+                    Checkbox(
+                        checked = isPaidToCourt,
+                        onCheckedChange = { isChecked -> isPaidToCourt = isChecked })
+                    Spacer(Modifier.size(6.dp))
+                    Text(text = SESSION_PAID_TO_COURT)
+                }
+                // Session Date
+                OutlinedTextField(
+                    label = { Text(text = SESSION_PAID_TO_COURT_DATE) },
+                    value = paidToCourtData,
+                    onValueChange = { text -> paidToCourtData = text })
+
+                } else {
+                Column {
+                    ElevatedCard(
+                        elevation = CardDefaults.cardElevation(
+                            defaultElevation = 6.dp
+                        ),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                        )
+                        {
+                            Checkbox(
+                                checked = hasPaid,
+                                onCheckedChange = { isChecked -> hasPaid = isChecked })
+                            Spacer(Modifier.size(6.dp))
+                            Text(text = SESSION_PLAYER_PAY_HAS_PAID_LABEL)
+                        }
+                        OutlinedTextField(
+                            label = { Text(text = SESSION_PAYMENT_DATE) },
+                            value = paymentDate,
+                            onValueChange = { text -> paymentDate = text })
+
+                    }
+                }
+            }
+
             OutlinedTextField(
                 label = { Text(text = SESSION_NOTES_LABEL) },
                 value = sessionNotes,
@@ -504,9 +640,15 @@ class AddSessionActivity: ComponentActivity() {
                         sessionReachedOnTime = sessionReachedOnTime,
                         sessionNumberOfShotsPlayed = sessionTotalShotsPlayed,
                         venueId = selectedVenue.venueId,
-                        players = selectedPlayers.map { player: Player -> player.id }.toList()
-                    )
+                        players = selectedPlayers.map { player: Player -> player.id }.toList(),
 
+                        sessionAmountDue = amountDue,
+                        sessionHasPaid = hasPaid,
+                        sessionPaidDate = paymentDate,
+                        sessionPayments = playerPayments,
+                        isSelfBooked = isBookedBySelf
+                    )
+                    Log.i("AddSessionActivity", playerPayments.size.toString())
                     Log.i("AddSessionActivity", session.toString())
                     runBlocking {
                         SessionRepository().insertSession(context = context, session = session)
@@ -535,5 +677,16 @@ class AddSessionActivity: ComponentActivity() {
 
     private fun getSelectedPlayingStructures(selectedPlayingStructures: List<String>): String {
         return selectedPlayingStructures.joinToString { selectedPlayingStructure -> selectedPlayingStructure }
+    }
+
+    private fun getSelectedPlayersPayments(selectedPlayers: List<Player>): List<PlayerPayment> {
+        var selectedPlayersPayments = emptyList<PlayerPayment>()
+        selectedPlayers.forEach { player ->
+            selectedPlayersPayments = selectedPlayersPayments +  PlayerPayment(
+                playerId = player.id,
+                playerName = player.displayName
+            )
+        }
+        return selectedPlayersPayments
     }
 }

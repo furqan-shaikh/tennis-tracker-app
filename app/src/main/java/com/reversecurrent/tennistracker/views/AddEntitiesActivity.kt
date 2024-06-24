@@ -30,6 +30,13 @@ import androidx.compose.ui.unit.dp
 import com.reversecurrent.tennistracker.ui.theme.TennisTrackerTheme
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import com.reversecurrent.tennistracker.models.VENUE_ACTION_INTENT_EXTRA
+import com.reversecurrent.tennistracker.models.VENUE_INTENT_EXTRA
+import com.reversecurrent.tennistracker.models.VenueActionEnum
+import com.reversecurrent.tennistracker.models.getEmptyVenue
+import com.reversecurrent.tennistracker.views.players.AddPlayerActivity
+import com.reversecurrent.tennistracker.views.sessions.AddSessionActivity
+import com.reversecurrent.tennistracker.views.venues.AddVenueActivity
 
 class AddEntitiesActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -89,6 +96,8 @@ fun navigateToAddPlayerActivity(context: android.content.Context) {
 }
 fun navigateToAddVenueActivity(context: android.content.Context) {
     val intent = Intent(context, AddVenueActivity::class.java)
+    intent.putExtra(VENUE_INTENT_EXTRA, getEmptyVenue())
+    intent.putExtra(VENUE_ACTION_INTENT_EXTRA, VenueActionEnum.ADD)
     context.startActivity(intent)
 }
 fun navigateToAddSessionActivity(context: android.content.Context) {

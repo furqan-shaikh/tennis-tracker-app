@@ -1,4 +1,4 @@
-package com.reversecurrent.tennistracker.views
+package com.reversecurrent.tennistracker.views.widgets
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding

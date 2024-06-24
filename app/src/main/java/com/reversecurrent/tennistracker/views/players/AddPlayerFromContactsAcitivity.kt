@@ -1,4 +1,4 @@
-package com.reversecurrent.tennistracker.views
+package com.reversecurrent.tennistracker.views.players
 
 import android.annotation.SuppressLint
 import android.content.ContentResolver

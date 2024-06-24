@@ -1,4 +1,4 @@
-package com.reversecurrent.tennistracker.views
+package com.reversecurrent.tennistracker.views.players
 
 import android.content.Intent
 import android.os.Bundle
@@ -12,10 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.MaterialTheme
@@ -32,19 +29,25 @@ import androidx.compose.ui.unit.dp
 import com.reversecurrent.tennistracker.ui.theme.TennisTrackerTheme
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import com.reversecurrent.tennistracker.views.players.ListPlayersActivity
-import com.reversecurrent.tennistracker.views.venues.ListVenuesActivity
+import com.reversecurrent.tennistracker.models.PLAYER_ACTION_INTENT_EXTRA
+import com.reversecurrent.tennistracker.models.PLAYER_INTENT_EXTRA
+import com.reversecurrent.tennistracker.models.PlayerActionEnum
+import com.reversecurrent.tennistracker.models.getEmptyPlayer
 
-class ListEntitiesActivity : ComponentActivity() {
+//const val TEXT_IMPORT = "Import from Existing Contacts"
+const val TEXT_MANUAL = "Manual Add"
+
+class AddPlayerActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
             TennisTrackerTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    ListEntitiesScreenLayout()
+                    AddPlayerLayout()
                 }
             }
         }
@@ -53,29 +56,25 @@ class ListEntitiesActivity : ComponentActivity() {
 
 @Preview
 @Composable
-fun ListEntitiesScreenLayout() {
+fun AddPlayerLayout() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 16.dp, vertical = 16.dp)
-            .verticalScroll(
-                rememberScrollState()),
+            .padding(horizontal = 16.dp, vertical = 16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        ListEntitiesButton("List Sessions", Icons.Default.Send)
-        ListEntitiesButton("List Players", Icons.Default.Person)
-        ListEntitiesButton("List Venues", Icons.Default.LocationOn)
+        AddPlayerButton("Import from Existing Contacts", Icons.Default.Send)
+        AddPlayerButton("Manual Add", Icons.Default.Person)
     }
 }
 
 @Composable
-fun ListEntitiesButton(text: String, icon: ImageVector) {
+fun AddPlayerButton(text: String, icon: ImageVector) {
     val context = LocalContext.current
     Button(
         onClick = {
             when(text){
-                "List Players" -> navigateToListPlayersActivity(context=context)
-                "List Venues" -> navigateToListVenuesActivity(context=context)
+                TEXT_MANUAL -> navigateToAddPlayerFromManualActivity(context=context)
             }
         },
         modifier = Modifier.fillMaxWidth(),
@@ -88,12 +87,9 @@ fun ListEntitiesButton(text: String, icon: ImageVector) {
     }
 }
 
-fun navigateToListPlayersActivity(context: android.content.Context) {
-    val intent = Intent(context, ListPlayersActivity::class.java)
-    context.startActivity(intent)
-}
-
-fun navigateToListVenuesActivity(context: android.content.Context) {
-    val intent = Intent(context, ListVenuesActivity::class.java)
+fun navigateToAddPlayerFromManualActivity(context: android.content.Context) {
+    val intent = Intent(context, AddPlayerFromManualActivity::class.java)
+    intent.putExtra(PLAYER_INTENT_EXTRA, getEmptyPlayer())
+    intent.putExtra(PLAYER_ACTION_INTENT_EXTRA, PlayerActionEnum.ADD)
     context.startActivity(intent)
 }
