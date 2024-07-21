@@ -173,14 +173,11 @@ class SessionRepository {
     @WorkerThread
     suspend fun getAllSessions(context: Any): List<SessionSummary> {
         return withContext(Dispatchers.IO) {
-            val sessionEntities: List<SessionEntity> =
-                DatabaseAccessor.getDatabase(applicationContext = context)
-                    .sessionDao().getAll()
-
+            val dbClient = DatabaseAccessor.getDatabase(applicationContext = context)
+            val sessionEntities: List<SessionEntity> = dbClient.sessionDao().getAll()
             val sessions = sessionEntities.map { sessionEntity ->
                 //for this session get all its players
-                val players = DatabaseAccessor.getDatabase(applicationContext = context)
-                    .sessionPlayersDao().getPlayers(sessionId = sessionEntity.uid)
+                val players = dbClient .sessionPlayersDao().getPlayers(sessionId = sessionEntity.uid)
                 val sessionDateStr =
                     fromEpoch(epoch = sessionEntity.sessionDate, format = SESSION_DATE_FORMAT)
                 SessionSummary(

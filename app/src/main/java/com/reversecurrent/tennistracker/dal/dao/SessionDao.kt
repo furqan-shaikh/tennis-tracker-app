@@ -50,7 +50,7 @@ interface SessionDao {
     @Query("SELECT * FROM $SESSION_TABLE_NAME WHERE $SESSION_TABLE_PAYMENT_HAS_PAID_COLUMN = 0 AND $SESSION_TABLE_PAYMENT_BOOKED_BY != \"$SELF_PLAYER\" AND $SESSION_TABLE_WASHED_OUT_COLUMN = \"0\"")
     suspend fun getAllOutstandingPaymentsBySelf(): List<SessionEntity>
 
-    @Query("SELECT * FROM $SESSION_TABLE_NAME order by $SESSION_TABLE_SESSION_DATE_COLUMN asc")
+    @Query("SELECT * FROM $SESSION_TABLE_NAME order by $SESSION_TABLE_SESSION_DATE_COLUMN desc")
     fun getAll(): List<SessionEntity>
 
     @Query("DELETE FROM $SESSION_TABLE_NAME WHERE uid=:sessionId")
