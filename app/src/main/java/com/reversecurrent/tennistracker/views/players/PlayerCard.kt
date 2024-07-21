@@ -17,12 +17,14 @@ import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.reversecurrent.tennistracker.models.Player
 import com.reversecurrent.tennistracker.views.widgets.CheckboxWidget
 import com.reversecurrent.tennistracker.views.widgets.TextWidget
+import kotlinx.coroutines.launch
 
 const val PLAYER_NAME_LABEL = "Player Name: "
 const val PLAYER_MOBILE_NUMBER_LABEL = "Mobile Number: "
@@ -30,7 +32,7 @@ const val PLAYER_LEVEL_LABEL = "Playing Level: "
 const val PLAYER_PLAYED_BEFORE_LABEL = "Played Before? "
 
 @Composable
-fun PlayerCardLayout(player: Player, context: Context, onEditPlayerClick: (Context, Player) -> Unit, onDeletePlayerClick: (Player) -> Unit) {
+fun PlayerCardLayout(player: Player, context: Context, onEditPlayerClick: (Context, Player) -> Unit, onDeletePlayerClick: (Context, Player) -> Unit) {
     Column{
         ElevatedCard(
             elevation = CardDefaults.cardElevation(
@@ -67,7 +69,8 @@ fun CardContent(player: Player) {
     CheckboxWidget(label= PLAYER_PLAYED_BEFORE_LABEL, value=player.playedBefore)
 }
 @Composable
-fun ActionButtons(player: Player, context: Context, onEditPlayerClick: (Context, Player) -> Unit, onDeletePlayerClick: (Player) -> Unit) {
+fun ActionButtons(player: Player, context: Context, onEditPlayerClick: (Context, Player) -> Unit, onDeletePlayerClick: (Context, Player) -> Unit) {
+    val coroutineScope = rememberCoroutineScope()
     Row {
         Button(
             onClick = {
@@ -81,7 +84,16 @@ fun ActionButtons(player: Player, context: Context, onEditPlayerClick: (Context,
         }
         Button(
             onClick = {
-                onDeletePlayerClick(player)
+                coroutineScope.launch {
+                    try {
+                        onDeletePlayerClick(context, player)
+                        // Handle success (e.g., show a success message)
+                    } catch (e: Exception) {
+                        // Handle error
+                    } finally {
+                    }
+                }
+
             },
             colors = ButtonDefaults.buttonColors(containerColor = Color.Black),
             contentPadding = PaddingValues(16.dp),

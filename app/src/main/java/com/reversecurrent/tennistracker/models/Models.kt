@@ -18,6 +18,20 @@ enum class VenueActionEnum {
     ADD, EDIT
 }
 
+const val SESSION_INTENT_EXTRA = "session_extra"
+const val SESSION_ACTION_INTENT_EXTRA = "session_action_extra"
+
+enum class SessionActionEnum {
+    ADD, EDIT
+}
+
+const val SESSION_SET_STATS_INTENT_EXTRA = "session_set_stats_extra"
+const val SESSION_SET_STATS_ACTION_INTENT_EXTRA = "session_set_stats_action_extra"
+
+enum class SessionSetStatsActionEnum {
+    ADD, EDIT
+}
+
 const val SELF_PLAYER = "Self"
 
 @Parcelize
@@ -71,42 +85,63 @@ fun getPlayingStructures() : List<String> {
     return listOf("Rally", "Sets", "Mini", "All")
 }
 
+@Parcelize
 data class Session (
+    val sessionId: Long = 0,
     val sessionDate: String,
-    val sessionDuration: Float,
+    val sessionDuration: Float = 1f,
     val sessionPlayingFormat: String = "Singles",
-    val sessionCost: Float,
+    val sessionCost: Float = 500f,
     val sessionNotes: String = "",
     val sessionPlayingStructure: String = "Rally",
+    val sessionSetScores: String = "",
     val sessionReachedOnTime: Boolean = true,
     val sessionWashedOut: Boolean = false,
-    val sessionQualityOfTennis: String,
-    val sessionNumberOfSteps: Int,
-    val sessionNumberOfShotsPlayed: Int,
+    val sessionQualityOfTennis: String = "Medium",
+    val sessionNumberOfSteps: Int = 500,
+    val sessionNumberOfShotsPlayed: Int = 300,
     val sessionAmountDue: Float = 0f,
     val sessionHasPaid: Boolean = false,
     val sessionPaidDate: String = "",
     val isSelfBooked: Boolean = false,
+    val bookedBy: String = "",
     val sessionPayments: List<PlayerPayment> = emptyList(),
+    val sessionIsPaidToCourt: Boolean = false,
+    val sessionPaidToCourtDate: String = "",
+    val sessionSetStats: List<SetStats> = emptyList(),
 
-    val players: List<Long>,
+    val players: List<Long> = emptyList(),
     val venueId: Long,
 
+): Parcelable
+
+fun getEmptySession(): Session {
+    return Session (
+        sessionDate = "",
+        sessionDuration = 1.0f,
+        sessionPlayingFormat = "Singles",
+        sessionCost = 500f,
+        venueId = 1
+    )
+}
+
+data class SessionSummary (
+    val sessionId: Long,
+    val sessionDate: String,
+    val sessionPeriod: String,
+    val sessionDuration: Float,
+    val players: List<String>
 )
 
+@Parcelize
 data class PlayerPayment (
+    val uid: Long = 0,
     val playerName: String,
     val playerId: Long,
     val paymentAmount: Float = 0.0f,
     val paymentDate: String = Date().toString(),
     val hasPaid: Boolean = false,
-)
-
-data class SelfPayment (
-    val paymentAmount: Float = 0.0f,
-    val paymentDate: String = Date().toString(),
-    val hasPaid: Boolean = false,
-)
+): Parcelable
 
 data class OutstandingPayment (
     val paymentAmount: Float = 0.0f,
@@ -120,4 +155,35 @@ data class OutstandingPaymentCourt (
     val venueName: String,
 )
 
+@Parcelize
+data class SetStats (
+    val setScore: String = "",
+    val setAces: Int = 0,
+    val setWinners: Int = 0,
+    val setDoubleFaults: Int = 0,
+    val sessionId: Long ,
+    val playerId: Long
+): Parcelable
+
+@Parcelize
+data class SetStatsSession (
+    val sessionId: Long ,
+    val sessionDisplayName: String,
+    val sessionSetStats: List<SetStats> = emptyList(),
+): Parcelable
+
+data class PlayerPlayedWith(
+    val playerName: String,
+    val playerId: Long,
+    val numberOfTimesPlayed: Int
+)
+data class TennisAnalytics(
+    val totalHoursPlayed: Float,
+    val totalShotsPlayed: Int,
+    val totalStepsTaken: Int,
+    val playedWithTheMost: PlayerPlayedWith,
+    val playedWithTheLeast: PlayerPlayedWith
+)
+
 const val SESSION_DATE_FORMAT = "yyyy-MM-dd HH:mm"
+const val ONLY_DATE_FORMAT = "yyyy-MM-dd"

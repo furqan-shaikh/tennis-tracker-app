@@ -1,0 +1,391 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 2,
+    "identityHash": "74fd640b0cbc3f56a5b152862a71616d",
+    "entities": [
+      {
+        "tableName": "players",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `player_name` TEXT NOT NULL, `mobile_number` TEXT NOT NULL, `playing_level` TEXT NOT NULL, `played_before` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "uid",
+            "columnName": "uid",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "playerName",
+            "columnName": "player_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mobileNumber",
+            "columnName": "mobile_number",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "playingLevel",
+            "columnName": "playing_level",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "playedBefore",
+            "columnName": "played_before",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "uid"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "venues",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `venue_name` TEXT NOT NULL, `venue_alias` TEXT NOT NULL, `primary_contact_number` TEXT NOT NULL, `primary_contact_name` TEXT NOT NULL, `address` TEXT NOT NULL, `number_of_courts` TEXT NOT NULL, `court_type` TEXT NOT NULL, `cost_per_hour` TEXT NOT NULL, `coaching_available` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "uid",
+            "columnName": "uid",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "venueName",
+            "columnName": "venue_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "venueAlias",
+            "columnName": "venue_alias",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "primaryContactNumber",
+            "columnName": "primary_contact_number",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "primaryContactName",
+            "columnName": "primary_contact_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "address",
+            "columnName": "address",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "numberOfCourts",
+            "columnName": "number_of_courts",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "courtType",
+            "columnName": "court_type",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "costPerHour",
+            "columnName": "cost_per_hour",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "coachingAvailable",
+            "columnName": "coaching_available",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "uid"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "sessions",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `session_date` INTEGER NOT NULL, `session_duration` REAL NOT NULL, `session_playing_format` TEXT NOT NULL, `session_cost` REAL NOT NULL, `session_notes` TEXT NOT NULL, `session_playing_structure` TEXT NOT NULL, `session_reached_time` INTEGER NOT NULL, `session_washed_out` INTEGER NOT NULL, `session_quality_of_tennis` TEXT NOT NULL, `session_number_of_steps` INTEGER NOT NULL, `session_number_of_shots_played` INTEGER NOT NULL, `session_venue_id` INTEGER NOT NULL, `session_payment_amount_due` REAL NOT NULL, `session_payment_has_paid` INTEGER NOT NULL, `session_payment_paid_date` TEXT NOT NULL, `session_payment_booked_by` TEXT NOT NULL DEFAULT '', `session_set_scores` TEXT NOT NULL DEFAULT '', FOREIGN KEY(`session_venue_id`) REFERENCES `venues`(`uid`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "fields": [
+          {
+            "fieldPath": "uid",
+            "columnName": "uid",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sessionDate",
+            "columnName": "session_date",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sessionDuration",
+            "columnName": "session_duration",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sessionPlayingFormat",
+            "columnName": "session_playing_format",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sessionCost",
+            "columnName": "session_cost",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sessionNotes",
+            "columnName": "session_notes",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sessionPlayingStructure",
+            "columnName": "session_playing_structure",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sessionReachedOnTime",
+            "columnName": "session_reached_time",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sessionWashedOut",
+            "columnName": "session_washed_out",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sessionQualityOfTennis",
+            "columnName": "session_quality_of_tennis",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sessionNumberOfSteps",
+            "columnName": "session_number_of_steps",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sessionNumberOfShotsPlayed",
+            "columnName": "session_number_of_shots_played",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "venueId",
+            "columnName": "session_venue_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sessionAmountDue",
+            "columnName": "session_payment_amount_due",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sessionHasPaid",
+            "columnName": "session_payment_has_paid",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sessionPaidDate",
+            "columnName": "session_payment_paid_date",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sessionBookedBy",
+            "columnName": "session_payment_booked_by",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "''"
+          },
+          {
+            "fieldPath": "sessionSetScores",
+            "columnName": "session_set_scores",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "''"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "uid"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": [
+          {
+            "table": "venues",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "session_venue_id"
+            ],
+            "referencedColumns": [
+              "uid"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "player_session_join",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`playerId` INTEGER NOT NULL, `sessionId` INTEGER NOT NULL, PRIMARY KEY(`playerId`, `sessionId`), FOREIGN KEY(`playerId`) REFERENCES `players`(`uid`) ON UPDATE NO ACTION ON DELETE NO ACTION , FOREIGN KEY(`sessionId`) REFERENCES `sessions`(`uid`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "fields": [
+          {
+            "fieldPath": "playerId",
+            "columnName": "playerId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sessionId",
+            "columnName": "sessionId",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "playerId",
+            "sessionId"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": [
+          {
+            "table": "players",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "playerId"
+            ],
+            "referencedColumns": [
+              "uid"
+            ]
+          },
+          {
+            "table": "sessions",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "sessionId"
+            ],
+            "referencedColumns": [
+              "uid"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "session_payments",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `session_payment_session_id` INTEGER NOT NULL, `session_payment_player_id` INTEGER NOT NULL, `session_payment_amount_due` REAL NOT NULL, `session_payment_has_paid` INTEGER NOT NULL, `session_payment_paid_date` TEXT NOT NULL, FOREIGN KEY(`session_payment_session_id`) REFERENCES `sessions`(`uid`) ON UPDATE NO ACTION ON DELETE NO ACTION , FOREIGN KEY(`session_payment_player_id`) REFERENCES `players`(`uid`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "fields": [
+          {
+            "fieldPath": "uid",
+            "columnName": "uid",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sessionId",
+            "columnName": "session_payment_session_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "playerId",
+            "columnName": "session_payment_player_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "paymentAmountDue",
+            "columnName": "session_payment_amount_due",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hasPaid",
+            "columnName": "session_payment_has_paid",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "paymentDate",
+            "columnName": "session_payment_paid_date",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "uid"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": [
+          {
+            "table": "sessions",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "session_payment_session_id"
+            ],
+            "referencedColumns": [
+              "uid"
+            ]
+          },
+          {
+            "table": "players",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "session_payment_player_id"
+            ],
+            "referencedColumns": [
+              "uid"
+            ]
+          }
+        ]
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '74fd640b0cbc3f56a5b152862a71616d')"
+    ]
+  }
+}

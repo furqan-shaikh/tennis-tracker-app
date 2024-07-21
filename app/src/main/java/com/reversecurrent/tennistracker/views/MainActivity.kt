@@ -21,7 +21,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -104,4 +107,12 @@ fun navigateToAnalyticsActivity(context: android.content.Context) {
 fun ShowToast(text: String) {
     val context = LocalContext.current
     Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MyDatetimePicker() {
+    val context = LocalContext.current
+    val dateState = rememberDatePickerState()
+    DatePicker(state = dateState)
 }

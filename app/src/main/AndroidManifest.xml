@@ -4,6 +4,7 @@
     package="com.reversecurrent.tennistracker">
     <uses-permission android:name="android.permission.READ_CONTACTS"/>
     <application
+        android:name=".application.TennisTrackerApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -23,8 +24,11 @@
         <activity android:name=".views.players.ListPlayersActivity"/>
         <activity android:name=".views.venues.ListVenuesActivity"/>
         <activity android:name=".views.analytics.MainAnalyticsActivity"/>
-        <activity android:name=".views.analytics.OutstandingPaymentsActivity"/>
+        <activity android:name=".views.analytics.OutstandingPaymentsToSelfActivity"/>
+        <activity android:name=".views.analytics.OutstandingPaymentsBySelfActivity"/>
         <activity android:name=".views.analytics.OutstandingPaymentsCourtActivity"/>
+        <activity android:name=".views.sessions.ListSessionsActivity" />
+        <activity android:name=".views.sessions.UpsertSetStatsActivity" />
         <activity
             android:name=".views.MainActivity"
             android:exported="true"
