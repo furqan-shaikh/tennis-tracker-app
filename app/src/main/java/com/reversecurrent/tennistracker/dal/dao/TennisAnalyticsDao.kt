@@ -13,8 +13,8 @@ import com.reversecurrent.tennistracker.dal.entities.PlayerPlayedWithEntity
 
 @Dao
 interface TennisAnalyticsDao {
-//    @Query("SELECT SUM($SESSION_TABLE_DURATION_COLUMN), SUM($SESSION_TABLE_NUMBER_OF_SHOTS_PLAYED_COLUMN), SUM($SESSION_TABLE_NUMBER_OF_STEPS_COLUMN) FROM sessions")
-//    suspend fun getBasicStats(): BasicTennisAnalyticsEntity
+    @Query("SELECT SUM($SESSION_TABLE_DURATION_COLUMN) as totalHoursPlayed, SUM($SESSION_TABLE_NUMBER_OF_SHOTS_PLAYED_COLUMN) as totalShotsPlayed, SUM($SESSION_TABLE_NUMBER_OF_STEPS_COLUMN) as totalStepsTaken FROM $SESSION_TABLE_NAME")
+    suspend fun getBasicStats(): BasicTennisAnalyticsEntity
 
 //    @Query("SELECT \n" +
 //            "    p.$PLAYER_TABLE_NAME_COLUMN, \n" +

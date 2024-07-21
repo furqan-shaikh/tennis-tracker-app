@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -33,6 +34,7 @@ import com.reversecurrent.tennistracker.views.players.AddPlayerActivity
 const val LABEL_VIEW_OUTSTANDING_PAYMENTS_TO_SELF = "View Outstanding Payments To Self"
 const val LABEL_VIEW_OUTSTANDING_PAYMENTS_TO_COURT = "View Outstanding Payments To Court"
 const val LABEL_VIEW_OUTSTANDING_PAYMENTS_BY_SELF = "View Outstanding Payments By Self"
+const val LABEL_VIEW_TENNIS_STATS_BASIC = "View Tennis Stats Basic"
 class MainAnalyticsActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,6 +63,7 @@ fun AnalyticsScreenLayout() {
         AddButton(LABEL_VIEW_OUTSTANDING_PAYMENTS_TO_SELF, Icons.Default.KeyboardArrowUp)
         AddButton(LABEL_VIEW_OUTSTANDING_PAYMENTS_TO_COURT, Icons.Default.KeyboardArrowUp)
         AddButton(LABEL_VIEW_OUTSTANDING_PAYMENTS_BY_SELF, Icons.Default.KeyboardArrowUp)
+        AddButton(LABEL_VIEW_TENNIS_STATS_BASIC, Icons.Default.Info)
     }
 }
 
@@ -73,6 +76,7 @@ fun AddButton(text: String, icon: ImageVector) {
                 LABEL_VIEW_OUTSTANDING_PAYMENTS_TO_SELF -> navigateToViewOutstandingPaymentsActivity(context=context)
                 LABEL_VIEW_OUTSTANDING_PAYMENTS_TO_COURT -> navigateToViewOutstandingPaymentsForCourtsActivity(context=context)
                 LABEL_VIEW_OUTSTANDING_PAYMENTS_BY_SELF -> navigateToViewOutstandingPaymentsBySelfActivity(context=context)
+                LABEL_VIEW_TENNIS_STATS_BASIC -> navigateToViewTennisStatsBasicActivity(context=context)
             }
         },
         modifier = Modifier.fillMaxWidth(),
@@ -84,6 +88,8 @@ fun AddButton(text: String, icon: ImageVector) {
         Text(text)
     }
 }
+
+
 
 fun navigateToViewOutstandingPaymentsActivity(context: android.content.Context) {
     val intent = Intent(context, OutstandingPaymentsToSelfActivity::class.java)
@@ -98,4 +104,10 @@ fun navigateToViewOutstandingPaymentsForCourtsActivity(context: android.content.
 fun navigateToViewOutstandingPaymentsBySelfActivity(context: android.content.Context) {
     val intent = Intent(context, OutstandingPaymentsBySelfActivity::class.java)
     context.startActivity(intent)
+}
+
+fun navigateToViewTennisStatsBasicActivity(context: android.content.Context) {
+    val intent = Intent(context, TennisStatsBasicActivity::class.java)
+    context.startActivity(intent)
+
 }
