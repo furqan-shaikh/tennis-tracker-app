@@ -178,12 +178,15 @@ data class PlayerPlayedWith(
     val numberOfTimesPlayed: Int
 )
 data class TennisAnalytics(
-    val totalHoursPlayed: Float,
-    val totalShotsPlayed: Int,
-    val totalStepsTaken: Int,
-    val playedWithTheMost: PlayerPlayedWith,
-    val playedWithTheLeast: PlayerPlayedWith
+    val totalHoursPlayed: Float = 0f,
+    val totalShotsPlayed: Int = 0,
+    val totalStepsTaken: Int = 0,
+    val playedWithTheMost: PlayerPlayedWith = PlayerPlayedWith("", 0, 0),
+    val playedWithTheLeast: PlayerPlayedWith = PlayerPlayedWith("", 0, 0),
+    val totalSetsPlayed: Int = 0,
+    val totalSetsWon: Int = 0,
 )
+
 
 const val SESSION_DATE_FORMAT = "yyyy-MM-dd HH:mm"
 const val ONLY_DATE_FORMAT = "yyyy-MM-dd"
