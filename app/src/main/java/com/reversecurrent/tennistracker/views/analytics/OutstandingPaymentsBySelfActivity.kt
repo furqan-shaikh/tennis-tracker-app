@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -29,7 +31,7 @@ import kotlinx.coroutines.runBlocking
 const val LABEL_OUTSTANDING_PAYMENTS_COUNT = "Total Count: "
 const val LABEL_OUTSTANDING_PAYMENTS_TOTAL_AMOUNT = "Total Amount: "
 
-class OutstandingPaymentsActivity : ComponentActivity() {
+class OutstandingPaymentsToSelfActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -53,13 +55,16 @@ fun OutstandingPaymentsLayout() {
     LaunchedEffect(Unit) {
         runBlocking {
             // Fetch the list of outstanding payments asynchronously
-            outstandingPayments = SessionRepository().getAllOutstandingPayments(context = context)
+            outstandingPayments = SessionRepository().getAllOutstandingPaymentsToSelf(context = context)
         }
     }
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 16.dp, vertical = 16.dp),
+            .padding(horizontal = 16.dp, vertical = 16.dp)
+            .verticalScroll(
+                rememberScrollState()
+            ),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Column {

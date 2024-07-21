@@ -33,6 +33,7 @@ import com.reversecurrent.tennistracker.ui.theme.TennisTrackerTheme
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import com.reversecurrent.tennistracker.views.players.ListPlayersActivity
+import com.reversecurrent.tennistracker.views.sessions.ListSessionsActivity
 import com.reversecurrent.tennistracker.views.venues.ListVenuesActivity
 
 class ListEntitiesActivity : ComponentActivity() {
@@ -64,7 +65,7 @@ fun ListEntitiesScreenLayout() {
     ) {
         ListEntitiesButton("List Sessions", Icons.Default.Send)
         ListEntitiesButton("List Players", Icons.Default.Person)
-        ListEntitiesButton("List Venues", Icons.Default.LocationOn)
+        ListEntitiesButton("List Sessions", Icons.Default.LocationOn)
     }
 }
 
@@ -76,6 +77,7 @@ fun ListEntitiesButton(text: String, icon: ImageVector) {
             when(text){
                 "List Players" -> navigateToListPlayersActivity(context=context)
                 "List Venues" -> navigateToListVenuesActivity(context=context)
+                "List Sessions" -> navigateToListSessionsActivity(context=context)
             }
         },
         modifier = Modifier.fillMaxWidth(),
@@ -95,5 +97,10 @@ fun navigateToListPlayersActivity(context: android.content.Context) {
 
 fun navigateToListVenuesActivity(context: android.content.Context) {
     val intent = Intent(context, ListVenuesActivity::class.java)
+    context.startActivity(intent)
+}
+
+fun navigateToListSessionsActivity(context: android.content.Context) {
+    val intent = Intent(context, ListSessionsActivity::class.java)
     context.startActivity(intent)
 }

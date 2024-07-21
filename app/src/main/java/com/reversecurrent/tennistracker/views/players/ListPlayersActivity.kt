@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
@@ -75,7 +76,18 @@ fun ListPlayersLayout() {
                 player = player,
                 context = context,
                 onEditPlayerClick = ::onEditPlayerClick,
-                onDeletePlayerClick = ::onDeletePlayerClick
+                onDeletePlayerClick = { context: Context, playerIn: Player ->
+                    runBlocking {
+                        val status = PlayerRepository().deleteByUid(context = context, uid = playerIn.id)
+                        if (status) {
+                            players = players.filter { it.id != playerIn.id }
+                            Toast.makeText(context, "Player ${playerIn.displayName} deleted", Toast.LENGTH_SHORT).show()
+                        } else{
+                            Toast.makeText(context, "Failed to delete player ${playerIn.displayName}", Toast.LENGTH_SHORT).show()
+                        }
+
+                    }
+                }
             )
         }
     }
@@ -87,9 +99,4 @@ fun onEditPlayerClick(context: Context, player: Player) {
     intent.putExtra(PLAYER_INTENT_EXTRA, player)
     intent.putExtra(PLAYER_ACTION_INTENT_EXTRA, PlayerActionEnum.EDIT)
     context.startActivity(intent)
-}
-
-fun onDeletePlayerClick(player: Player) {
-    Log.i("onDeletePlayerClick", player.toString())
-    // ask for confirmation
 }

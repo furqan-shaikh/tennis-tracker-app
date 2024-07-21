@@ -6,11 +6,14 @@ import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import com.reversecurrent.tennistracker.dal.SESSION_TABLE_COST_COLUMN
 import com.reversecurrent.tennistracker.dal.SESSION_TABLE_DURATION_COLUMN
+import com.reversecurrent.tennistracker.dal.SESSION_TABLE_HAS_PAID_TO_COURT
 import com.reversecurrent.tennistracker.dal.SESSION_TABLE_NAME
 import com.reversecurrent.tennistracker.dal.SESSION_TABLE_NOTES_COLUMN
 import com.reversecurrent.tennistracker.dal.SESSION_TABLE_NUMBER_OF_SHOTS_PLAYED_COLUMN
 import com.reversecurrent.tennistracker.dal.SESSION_TABLE_NUMBER_OF_STEPS_COLUMN
+import com.reversecurrent.tennistracker.dal.SESSION_TABLE_PAID_TO_COURT_DATE
 import com.reversecurrent.tennistracker.dal.SESSION_TABLE_PAYMENT_AMOUNT_DUE_COLUMN
+import com.reversecurrent.tennistracker.dal.SESSION_TABLE_PAYMENT_BOOKED_BY
 import com.reversecurrent.tennistracker.dal.SESSION_TABLE_PAYMENT_HAS_PAID_COLUMN
 import com.reversecurrent.tennistracker.dal.SESSION_TABLE_PAYMENT_PAID_DATE_COLUMN
 import com.reversecurrent.tennistracker.dal.SESSION_TABLE_PLAYING_FORMAT_COLUMN
@@ -51,7 +54,10 @@ data class SessionEntity (
     // Payment columns
     @ColumnInfo(name = SESSION_TABLE_PAYMENT_AMOUNT_DUE_COLUMN) val sessionAmountDue: Float = 0f,
     @ColumnInfo(name = SESSION_TABLE_PAYMENT_HAS_PAID_COLUMN) val sessionHasPaid: Boolean = false,
-    @ColumnInfo(name = SESSION_TABLE_PAYMENT_PAID_DATE_COLUMN) val sessionPaidDate: String = ""
+    @ColumnInfo(name = SESSION_TABLE_PAYMENT_PAID_DATE_COLUMN) val sessionPaidDate: String = "",
+    @ColumnInfo(name = SESSION_TABLE_PAYMENT_BOOKED_BY, defaultValue = "") val sessionBookedBy: String = "",
 
+    @ColumnInfo(name = SESSION_TABLE_HAS_PAID_TO_COURT, defaultValue = "0") val sessionHasPaidToCourt: Boolean = false,
+    @ColumnInfo(name = SESSION_TABLE_PAID_TO_COURT_DATE, defaultValue = "0") val sessionPaidToCourtDate: Long = 0
     )
 

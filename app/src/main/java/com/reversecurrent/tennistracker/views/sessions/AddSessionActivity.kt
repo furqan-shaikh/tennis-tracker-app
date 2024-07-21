@@ -1,10 +1,15 @@
 package com.reversecurrent.tennistracker.views.sessions
 
+
+import android.content.Context
+import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -23,10 +28,15 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.List
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -38,6 +48,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -51,7 +62,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.reversecurrent.tennistracker.models.Player
 import com.reversecurrent.tennistracker.models.PlayerPayment
@@ -68,11 +78,26 @@ import com.reversecurrent.tennistracker.ui.theme.TennisTrackerTheme
 import com.reversecurrent.tennistracker.utils.safeStrToFloat
 import com.reversecurrent.tennistracker.utils.safeStrToInt
 import com.reversecurrent.tennistracker.views.players.NAME_LABEL
-import com.reversecurrent.tennistracker.views.players.navigateToParentActivity
 import kotlinx.coroutines.runBlocking
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.IconButton
+import androidx.compose.ui.graphics.vector.ImageVector
+import com.reversecurrent.tennistracker.models.SESSION_ACTION_INTENT_EXTRA
+import com.reversecurrent.tennistracker.models.SESSION_DATE_FORMAT
+import com.reversecurrent.tennistracker.models.SESSION_INTENT_EXTRA
+import com.reversecurrent.tennistracker.models.SESSION_SET_STATS_ACTION_INTENT_EXTRA
+import com.reversecurrent.tennistracker.models.SESSION_SET_STATS_INTENT_EXTRA
+import com.reversecurrent.tennistracker.models.SessionActionEnum
+import com.reversecurrent.tennistracker.models.SessionSetStatsActionEnum
+import com.reversecurrent.tennistracker.models.SetStatsSession
+import com.reversecurrent.tennistracker.utils.convertMillisToLocalDate
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+
 
 // UI Labels defined here
-const val SESSION_DATE_LABEL = "Session Date: yyyy-MM-dd HH:mm"
+const val SESSION_DATE_LABEL = "Session Date: "
+const val SESSION_TIME_LABEL = "Session Time: HH:MM"
 const val SESSION_DURATION_LABEL = "Session Duration: (in hours)"
 const val SESSION_SELECT_PLAYERS_LABEL = "Select Players"
 const val SESSION_SELECT_VENUE_LABEL = "Select Venue"
@@ -85,7 +110,6 @@ const val SESSION_NUMBER_OF_STEPS_LABEL = "Number of Steps"
 const val SESSION_NOTES_LABEL = "How did the session go?"
 const val SESSION_REACHED_ON_TIME_LABEL = "Reached on Time?"
 const val SESSION_NUMBER_OF_SHOTS_PLAYED = "Total Shots Played"
-const val SESSION_ADD_SESSION_BUTTON_LABEL = "Add Session"
 const val SESSION_BOOKED_BY_LABEL = "Booked By"
 const val SESSION_PLAYER_PAY_AMOUNT_LABEL = "Amount Due"
 const val SESSION_PLAYER_PAY_HAS_PAID_LABEL = "Has Paid"
@@ -95,26 +119,43 @@ const val SESSION_PAYMENT_DATE = "Paid Date"
 
 
 class AddSessionActivity: ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val session = intent.getParcelableExtra<Session>(
+            SESSION_INTENT_EXTRA
+        )
+        val sessionActionEnum: SessionActionEnum? = intent.getSerializableExtra(
+            SESSION_ACTION_INTENT_EXTRA
+        ) as? SessionActionEnum
         setContent {
             TennisTrackerTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    AddSessionFormLayout()
+                    if (session != null && sessionActionEnum != null) {
+                        AddSessionFormLayout(
+                            session = session,
+                            sessionActionEnum = sessionActionEnum
+                        )
+                    }
                 }
             }
         }
     }
+}
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun PlayerPaymentLayout(playerPayment: PlayerPayment, onChange: (playerPayment: PlayerPayment) -> Unit) {
         var playerName by remember { mutableStateOf(playerPayment.playerName) }
-        var amountDue by remember { mutableFloatStateOf(playerPayment.paymentAmount) }
+        var amountDue by remember { mutableStateOf(playerPayment.paymentAmount.toString()) }
         var hasPaid by remember { mutableStateOf(playerPayment.hasPaid) }
         var paymentDate by remember { mutableStateOf(playerPayment.paymentDate) }
+        var showPaymentDateDialog by remember { mutableStateOf(false) }
+        val paymentDateState = rememberDatePickerState()
         Column()
         {
             ElevatedCard(
@@ -134,9 +175,10 @@ class AddSessionActivity: ComponentActivity() {
 
                 OutlinedTextField(
                     label = { Text(text = SESSION_PLAYER_PAY_AMOUNT_LABEL)},
-                    value = amountDue.toString(),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    value = amountDue,
                     onValueChange = { text ->
-                        amountDue = safeStrToFloat(text)
+                        amountDue = text
                         onChange(playerPayment.copy(paymentAmount = safeStrToFloat(text)))})
 
                 Row (
@@ -154,7 +196,47 @@ class AddSessionActivity: ComponentActivity() {
                 OutlinedTextField(
                     label = { Text(text = SESSION_PAYMENT_DATE)},
                     value = paymentDate,
-                    onValueChange = { text -> onChange(playerPayment.copy(paymentDate = text))})
+                    onValueChange = { },
+                    readOnly = true,
+                    enabled = false
+                    )
+                IconButton(onClick = { showPaymentDateDialog = true }) {
+                    Icon(
+                        imageVector = Icons.Default.DateRange,
+                        contentDescription = null
+                    )
+                }
+                if (showPaymentDateDialog) {
+                    DatePickerDialog(
+                        onDismissRequest = { showPaymentDateDialog = false },
+                        confirmButton = {
+                            Button(
+                                onClick = {
+                                    showPaymentDateDialog = false
+                                    paymentDate = paymentDateState.selectedDateMillis?.let {
+                                        convertMillisToLocalDate(it)
+                                    }.toString()
+                                    onChange(playerPayment.copy(paymentDate = paymentDate))
+                                }
+                            ) {
+                                Text(text = "OK")
+                            }
+                        },
+                        dismissButton = {
+                            Button(
+                                onClick = { showPaymentDateDialog = false }
+                            ) {
+                                Text(text = "Cancel")
+                            }
+                        }
+                    ) {
+                        DatePicker(
+                            state = paymentDateState,
+                            showModeToggle = true
+                        )
+
+                    }
+                }
             }
         }
     }
@@ -197,50 +279,89 @@ class AddSessionActivity: ComponentActivity() {
 //        }
 //    }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     @OptIn(ExperimentalMaterial3Api::class)
-    @Preview
     @Composable
-    fun AddSessionFormLayout() {
+    fun AddSessionFormLayout(session: Session, sessionActionEnum: SessionActionEnum) {
         val context = LocalContext.current
 
+        var sessionDateFromModel = ""
+        var sessionTimeFromModel = ""
+        var showSetScoresFromModel = false
+        if(sessionActionEnum == SessionActionEnum.EDIT) {
+            val formatter = DateTimeFormatter.ofPattern(SESSION_DATE_FORMAT)
+            val localDateTime = LocalDateTime.parse(session.sessionDate, formatter)
+
+            if (localDateTime != null) {
+                val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+                val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
+
+                sessionDateFromModel = localDateTime.format(dateFormatter)
+                sessionTimeFromModel = localDateTime.format(timeFormatter)
+            }
+
+
+            if(session.sessionPlayingStructure.contains("Sets")){
+                showSetScoresFromModel = true
+            }
+        }
+
         // define state for each form element
-        var sessionDate by remember { mutableStateOf("") }
-        var sessionDuration by remember { mutableFloatStateOf(0.0F) }
+        var showSessionDateDialog by remember { mutableStateOf(false) }
+        val sessionDateState = rememberDatePickerState()
+        var sessionDate by remember { mutableStateOf(sessionDateFromModel) }
+        var sessionTime by remember { mutableStateOf(sessionTimeFromModel) }
+        var sessionDuration by remember { mutableStateOf(session.sessionDuration.toString()) }
         var players by remember { mutableStateOf(emptyList<Player>()) }
-        var selectedPlayers by remember { mutableStateOf(emptyList<Player>()) }
+        var selectedPlayers by remember { mutableStateOf( emptyList<Player>()) }
         var isPlayersExpanded by remember { mutableStateOf(false) }
         var venues by remember { mutableStateOf(emptyList<Venue>()) }
         var isVenuesExpanded by remember { mutableStateOf(false) }
         var selectedVenue by remember { mutableStateOf(getEmptyVenue()) }
-        var sessionQualityOfTennis by remember { mutableStateOf("") }
+        var sessionQualityOfTennis by remember { mutableStateOf(session.sessionQualityOfTennis) }
         var isQualityOfTennisExpanded by remember { mutableStateOf(false) }
-        var selectedPlayingFormats by remember { mutableStateOf(emptyList<String>()) }
+        var selectedPlayingFormats by remember { mutableStateOf(session.sessionPlayingFormat.split(",")) }
         var isPlayingFormatsExpanded by remember { mutableStateOf(false) }
-        var sessionCost by remember { mutableFloatStateOf(0.0F) }
-        var sessionNotes by remember { mutableStateOf("") }
-        var selectedPlayingStructures by remember { mutableStateOf(emptyList<String>()) }
+        var sessionCost by remember { mutableStateOf(session.sessionCost.toString()) }
+        var sessionNotes by remember { mutableStateOf(session.sessionNotes) }
+        var selectedPlayingStructures by remember { mutableStateOf(session.sessionPlayingStructure.split(",")) }
         var isPlayingStructuresExpanded by remember { mutableStateOf(false) }
-        var sessionWashedOut by remember { mutableStateOf(false) }
-        var sessionNumberOfSteps by remember { mutableIntStateOf(0) }
-        var sessionReachedOnTime by remember { mutableStateOf(false) }
-        var sessionTotalShotsPlayed by remember { mutableIntStateOf(0) }
-        var bookedBy by remember { mutableStateOf("") }
-        var isBookedBySelf by remember { mutableStateOf(false) }
+        var showSetScores by remember { mutableStateOf(showSetScoresFromModel) }
+        var setScores by remember { mutableStateOf("") }
+        var sessionWashedOut by remember { mutableStateOf(session.sessionWashedOut) }
+        var sessionNumberOfSteps by remember { mutableIntStateOf(session.sessionNumberOfSteps) }
+        var sessionReachedOnTime by remember { mutableStateOf(session.sessionReachedOnTime) }
+        var sessionTotalShotsPlayed by remember { mutableIntStateOf(session.sessionNumberOfShotsPlayed) }
+        var bookedBy by remember { mutableStateOf(session.bookedBy) }
+        var isBookedBySelf by remember { mutableStateOf(session.isSelfBooked) }
         var isBookedByExpanded by remember { mutableStateOf(false) }
-        var isPaidToCourt by remember { mutableStateOf(false)}
-        var paidToCourtData by remember { mutableStateOf("") }
+        var isPaidToCourt by remember { mutableStateOf(session.sessionIsPaidToCourt)}
+        var paidToCourtDate by remember { mutableStateOf(session.sessionPaidToCourtDate) }
+        val paidToCourtDateState = rememberDatePickerState()
+        var showPaidToCourtDateDialog by remember { mutableStateOf(false) }
 
-        var amountDue by remember { mutableFloatStateOf(0.0F) }
-        var hasPaid by remember { mutableStateOf(false) }
-        var paymentDate by remember { mutableStateOf("") }
+        var amountDue by remember { mutableFloatStateOf(session.sessionAmountDue) }
+        var hasPaid by remember { mutableStateOf(session.sessionHasPaid) }
+        var paymentDate by remember { mutableStateOf(session.sessionPaidDate) }
 
-        var playerPayments by remember { mutableStateOf(emptyList<PlayerPayment>()) }
+        var playerPayments by remember { mutableStateOf(session.sessionPayments) }
+        var showPaidToBookerDateDialog by remember { mutableStateOf(false) }
+        val paidToBookerDateState = rememberDatePickerState()
 
         LaunchedEffect(Unit) {
             runBlocking {
                 // Fetch the list of players asynchronously
                 players = PlayerRepository().getAllPlayers(context = context)
                 venues = VenueRepository().getAllVenues(context = context)
+                if(sessionActionEnum == SessionActionEnum.EDIT) {
+//                    for (player in players) {
+//                        if (player.id in session.se) {
+//                            selectedPlayersFromModel = selectedPlayersFromModel + player
+//                        }
+//                    }
+                    selectedPlayers = players.filter { player -> session.players.contains(player.id) }
+                    selectedVenue = venues.find { it.venueId == session.venueId }!!
+                }
             }
         }
 
@@ -253,15 +374,66 @@ class AddSessionActivity: ComponentActivity() {
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             // Session Date
+            Row{
+                OutlinedTextField(
+                    label = { Text(text = SESSION_DATE_LABEL) },
+                    value = sessionDate,
+                    onValueChange = { },
+                    readOnly = true,
+                    enabled = false
+                )
+                IconButton(onClick = { showSessionDateDialog = true }) {
+                    Icon(
+                        imageVector = Icons.Default.DateRange,
+                        contentDescription = null
+                    )
+                }
+            }
+
+            if (showSessionDateDialog) {
+                DatePickerDialog(
+                    onDismissRequest = { showSessionDateDialog = false },
+                    confirmButton = {
+                        Button(
+                            onClick = {
+                                showSessionDateDialog = false
+                                sessionDate = sessionDateState.selectedDateMillis?.let {
+                                    convertMillisToLocalDate(it)
+                                }.toString()
+                            }
+                        ) {
+                            Text(text = "OK")
+                        }
+                    },
+                    dismissButton = {
+                        Button(
+                            onClick = { showSessionDateDialog = false }
+                        ) {
+                            Text(text = "Cancel")
+                        }
+                    }
+                ) {
+                    DatePicker(
+                        state = sessionDateState,
+                        showModeToggle = true
+                    )
+
+                }
+            }
+
+            // Session Time
             OutlinedTextField(
-                label = { Text(text = SESSION_DATE_LABEL) },
-                value = sessionDate,
-                onValueChange = { text -> sessionDate = text })
+                label = { Text(text = SESSION_TIME_LABEL) },
+                value = sessionTime,
+                onValueChange = { text -> sessionTime = text})
+
+
             // Session Duration in hours
             OutlinedTextField(
                 label = { Text(text = SESSION_DURATION_LABEL) },
-                value = sessionDuration.toString(),
-                onValueChange = { text -> sessionDuration = safeStrToFloat(text) })
+                value = sessionDuration,
+                onValueChange = { text -> sessionDuration = text },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number))
             // Select Players
             Column {
                 Text(text = SESSION_SELECT_PLAYERS_LABEL)
@@ -443,14 +615,18 @@ class AddSessionActivity: ComponentActivity() {
 
                     ExposedDropdownMenu(
                         expanded = isPlayingStructuresExpanded,
-                        onDismissRequest = { isPlayingStructuresExpanded = false }
+                        onDismissRequest = {
+                            isPlayingStructuresExpanded = false
+                            // if Sets selected, show UI to add set scores
+//                            showSetScores = selectedPlayingStructures.contains("Sets")
+                        }
                     ) {
                         getPlayingStructures().forEach { playingStructure ->
                             Row {
                                 DropdownMenuItem(
                                     text = { Text(text = playingStructure) },
                                     onClick = {
-                                        selectedPlayingStructures = if (selectedPlayingFormats.contains(playingStructure)) {
+                                        selectedPlayingStructures = if (selectedPlayingStructures.contains(playingStructure)) {
                                             selectedPlayingStructures - playingStructure
                                         } else {
                                             selectedPlayingStructures + playingStructure
@@ -462,16 +638,28 @@ class AddSessionActivity: ComponentActivity() {
                                     onCheckedChange = null
                                 )
                             }
-
                         }
                     }
                 }
+                if(showSetScores) {
+                    Button(
+                        onClick = {
+                            navigateToSetScoresActivity(context=context, session=session, sessionId=session.sessionId, actionType=sessionActionEnum)
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = Color.Black),
+                    ) {
+                        Icon(Icons.Default.List, contentDescription = null) // Display icon
+                        Spacer(modifier = Modifier.width(8.dp)) // Add space between icon and text
+                        Text("Sets")
+                    }
+                }
             }
+
             // Session Cost
             OutlinedTextField(
                 label = { Text(text = SESSION_COST_LABEL) },
-                value = sessionCost.toString(),
-                onValueChange = { text -> sessionCost = safeStrToFloat(text)},
+                value = sessionCost,
+                onValueChange = { text -> sessionCost = text},
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
             )
             // Session Number of Steps
@@ -551,8 +739,12 @@ class AddSessionActivity: ComponentActivity() {
                 Column{
                     selectedPlayers.forEach{player->
                         val playerPayment=PlayerPayment(
+                            uid=playerPayments.find { it.playerId == player.id }?.uid ?: 0L,
                             playerId=player.id,
-                            playerName=player.displayName
+                            playerName=player.displayName,
+                            paymentAmount=playerPayments.find { it.playerId == player.id }?.paymentAmount ?: 0f,
+                            hasPaid=playerPayments.find { it.playerId == player.id }?.hasPaid ?: false,
+                            paymentDate=playerPayments.find { it.playerId == player.id }?.paymentDate ?: ""
                         )
 //                        playerPayments = playerPayments+playerPayment
                         PlayerPaymentLayout(
@@ -580,11 +772,50 @@ class AddSessionActivity: ComponentActivity() {
                     Spacer(Modifier.size(6.dp))
                     Text(text = SESSION_PAID_TO_COURT)
                 }
-                // Session Date
+                // Paid to court date
                 OutlinedTextField(
                     label = { Text(text = SESSION_PAID_TO_COURT_DATE) },
-                    value = paidToCourtData,
-                    onValueChange = { text -> paidToCourtData = text })
+                    value = paidToCourtDate,
+                    onValueChange = { },
+                    readOnly = true,
+                    enabled = false
+                )
+                IconButton(onClick = { showPaidToCourtDateDialog = true }) {
+                    Icon(
+                        imageVector = Icons.Default.DateRange,
+                        contentDescription = null
+                    )
+                }
+                if (showPaidToCourtDateDialog) {
+                    DatePickerDialog(
+                        onDismissRequest = { showPaidToCourtDateDialog = false },
+                        confirmButton = {
+                            Button(
+                                onClick = {
+                                    showPaidToCourtDateDialog = false
+                                    paidToCourtDate = paidToCourtDateState.selectedDateMillis?.let {
+                                        convertMillisToLocalDate(it)
+                                    }.toString()
+                                }
+                            ) {
+                                Text(text = "OK")
+                            }
+                        },
+                        dismissButton = {
+                            Button(
+                                onClick = { showPaidToCourtDateDialog = false }
+                            ) {
+                                Text(text = "Cancel")
+                            }
+                        }
+                    ) {
+                        DatePicker(
+                            state = paidToCourtDateState,
+                            showModeToggle = true
+                        )
+
+                    }
+                }
 
                 } else {
                 Column {
@@ -609,12 +840,49 @@ class AddSessionActivity: ComponentActivity() {
                         OutlinedTextField(
                             label = { Text(text = SESSION_PAYMENT_DATE) },
                             value = paymentDate,
-                            onValueChange = { text -> paymentDate = text })
+                            onValueChange = { },
+                            readOnly = true,
+                            enabled = false)
+                        IconButton(onClick = { showPaidToBookerDateDialog = true }) {
+                                Icon(
+                                    imageVector = Icons.Default.DateRange,
+                                    contentDescription = null
+                                )
+                            }
+                        }
 
+                        if (showPaidToBookerDateDialog) {
+                            DatePickerDialog(
+                                onDismissRequest = { showPaidToBookerDateDialog = false },
+                                confirmButton = {
+                                    Button(
+                                        onClick = {
+                                            showPaidToBookerDateDialog = false
+                                            paymentDate = paidToBookerDateState.selectedDateMillis?.let {
+                                                convertMillisToLocalDate(it)
+                                            }.toString()
+                                        }
+                                    ) {
+                                        Text(text = "OK")
+                                    }
+                                },
+                                dismissButton = {
+                                    Button(
+                                        onClick = { showPaidToBookerDateDialog = false }
+                                    ) {
+                                        Text(text = "Cancel")
+                                    }
+                                }
+                            ) {
+                                DatePicker(
+                                    state = paidToBookerDateState,
+                                    showModeToggle = true
+                                )
+
+                            }
+                        }
                     }
                 }
-            }
-
             OutlinedTextField(
                 label = { Text(text = SESSION_NOTES_LABEL) },
                 value = sessionNotes,
@@ -623,53 +891,114 @@ class AddSessionActivity: ComponentActivity() {
                     .fillMaxWidth()
                     .height(120.dp)
                     .background(Color.White, RoundedCornerShape(5.dp)))
+
             Button(
                 onClick = {
-                    Log.i("AddSessionActivity", "add clicked")
                     // create Session object
-                    val session = Session(
-                        sessionDate = sessionDate,
-                        sessionDuration = sessionDuration,
+                    val sessionNewOrEdit = Session(
+                        sessionId = session.sessionId,
+                        // Session dates related
+                        sessionDate = "$sessionDate $sessionTime",
+                        sessionDuration = safeStrToFloat(sessionDuration),
+                        sessionReachedOnTime = sessionReachedOnTime,
+                        sessionWashedOut = sessionWashedOut,
+
+                        // session stats related
                         sessionPlayingFormat = getSelectedPlayingFormats(selectedPlayingFormats = selectedPlayingFormats),
                         sessionPlayingStructure = getSelectedPlayingStructures(selectedPlayingStructures = selectedPlayingStructures),
-                        sessionCost = sessionCost,
-                        sessionNotes = sessionNotes,
-                        sessionWashedOut = sessionWashedOut,
+                        sessionSetScores = setScores,
                         sessionNumberOfSteps = sessionNumberOfSteps,
                         sessionQualityOfTennis = sessionQualityOfTennis,
-                        sessionReachedOnTime = sessionReachedOnTime,
+                        sessionNotes = sessionNotes,
                         sessionNumberOfShotsPlayed = sessionTotalShotsPlayed,
+
+                        // venue
                         venueId = selectedVenue.venueId,
+
+                        // players
                         players = selectedPlayers.map { player: Player -> player.id }.toList(),
 
+                        // payment related
+                        sessionCost = safeStrToFloat(sessionCost),
+                        bookedBy = bookedBy,
+                        isSelfBooked = isBookedBySelf,
+                        sessionPayments = playerPayments,
+
+                        // when self needs to pay
                         sessionAmountDue = amountDue,
                         sessionHasPaid = hasPaid,
                         sessionPaidDate = paymentDate,
-                        sessionPayments = playerPayments,
-                        isSelfBooked = isBookedBySelf
+
+                        // paid to court details
+                        sessionIsPaidToCourt = isPaidToCourt,
+                        sessionPaidToCourtDate = paidToCourtDate,
                     )
                     Log.i("AddSessionActivity", playerPayments.size.toString())
-                    Log.i("AddSessionActivity", session.toString())
+                    Log.i("AddSessionActivity", sessionNewOrEdit.toString())
                     runBlocking {
-                        SessionRepository().insertSession(context = context, session = session)
-                        Toast.makeText(context, "Successfully added ${session.sessionDate}", Toast.LENGTH_LONG).show()
-                        navigateToParentActivity(context = context)
+                        // 1. Add session to database
+                        val insertSessionResult = SessionRepository().insertSession(context = context, session = sessionNewOrEdit)
+                        if(insertSessionResult.isSuccessful){
+                            // 2. Show success toast
+                            showSuccessToast(context = context, sessionActionEnum = sessionActionEnum, session = sessionNewOrEdit)
+                            // 3. If playing structure has sets, navigate to set scores activity
+                            if (sessionNewOrEdit.sessionPlayingStructure.contains("Sets")) {
+
+                                navigateToSetScoresActivity(context = context, session = sessionNewOrEdit, sessionId = insertSessionResult.sessionId, actionType = sessionActionEnum)
+                            } else {
+                                navigateToListSessionActivity(context)
+                            }
+                        }else{
+                            Log.e("AddSessionActivity", insertSessionResult.error)
+                            Toast.makeText(context, "Failed to save session - ${insertSessionResult.error}", Toast.LENGTH_LONG).show()
+                        }
+
                     }
                 },
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Black),
                 contentPadding = PaddingValues(16.dp),
             ) {
-                Icon(Icons.Default.Add, contentDescription = null) // Display icon
+                Icon(getSaveActionButtonIcon(sessionActionEnum), contentDescription = null) // Display icon
                 Spacer(modifier = Modifier.width(8.dp)) // Add space between icon and text
-                Text(SESSION_ADD_SESSION_BUTTON_LABEL)
+                Text(getSaveActionButtonLabel(sessionActionEnum))
+            }
+            Button(
+                onClick = {
+                    navigateToListSessionActivity(context)
+                },
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(containerColor = Color.Black),
+                contentPadding = PaddingValues(16.dp),
+            ) {
+                Icon(Icons.Default.Clear, contentDescription = null) // Display icon
+                Spacer(modifier = Modifier.width(8.dp)) // Add space between icon and text
+                Text("Close")
+            }
             }
         }
-    }
 
-    private fun getSelectedPlayerNames(selectedPlayers: List<Player>): String {
-        return selectedPlayers.joinToString { selectedPlayer -> selectedPlayer.displayName }
+fun navigateToSetScoresActivity(context: Context, session: Session, sessionId: Long, actionType: SessionActionEnum) {
+    val intent = Intent(context, UpsertSetStatsActivity::class.java)
+    val sessionSetStats = SetStatsSession(
+        sessionId = sessionId,
+        sessionDisplayName = session.sessionDate,
+        sessionSetStats = session.sessionSetStats
+    )
+    Log.i("AddSessionActivity", sessionSetStats.toString())
+    intent.putExtra(SESSION_SET_STATS_INTENT_EXTRA, sessionSetStats)
+
+    if (actionType == SessionActionEnum.EDIT) {
+        intent.putExtra(SESSION_SET_STATS_ACTION_INTENT_EXTRA, SessionSetStatsActionEnum.EDIT)
+    } else {
+        intent.putExtra(SESSION_SET_STATS_ACTION_INTENT_EXTRA, SessionSetStatsActionEnum.ADD)
     }
+    context.startActivity(intent)
+}
+
+private fun getSelectedPlayerNames(selectedPlayers: List<Player>): String {
+        return selectedPlayers.joinToString { selectedPlayer -> selectedPlayer.displayName }
+}
 
     private fun getSelectedPlayingFormats(selectedPlayingFormats: List<String>): String {
         return selectedPlayingFormats.joinToString { selectedPlayingFormat -> selectedPlayingFormat }
@@ -689,4 +1018,32 @@ class AddSessionActivity: ComponentActivity() {
         }
         return selectedPlayersPayments
     }
-}
+
+    private fun navigateToListSessionActivity(context: Context) {
+        val intent = Intent(context, ListSessionsActivity::class.java)
+        context.startActivity(intent)
+    }
+
+    fun getSaveActionButtonLabel(actionType: SessionActionEnum): String {
+        return when (actionType) {
+            SessionActionEnum.ADD -> "Add Session"
+            SessionActionEnum.EDIT -> "Edit Session"
+        }
+    }
+
+    fun getSaveActionButtonIcon(actionType: SessionActionEnum): ImageVector {
+        return when (actionType) {
+            SessionActionEnum.ADD -> Icons.Default.Add
+            SessionActionEnum.EDIT -> Icons.Default.Edit
+        }
+    }
+
+    fun showSuccessToast(context: Context, sessionActionEnum: SessionActionEnum, session: Session) {
+        var addOrEditMessage = ""
+        if (sessionActionEnum == SessionActionEnum.ADD) {
+            addOrEditMessage = "Added"
+        } else if (sessionActionEnum == SessionActionEnum.EDIT) {
+            addOrEditMessage = "Edited"
+        }
+        Toast.makeText(context, "Successfully $addOrEditMessage ${session.sessionDate}", Toast.LENGTH_LONG).show()
+    }
