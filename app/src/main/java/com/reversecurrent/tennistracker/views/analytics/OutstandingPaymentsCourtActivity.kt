@@ -2,9 +2,11 @@ package com.reversecurrent.tennistracker.views.analytics
 
 
 
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -31,6 +33,7 @@ const val LABEL_OUTSTANDING_PAYMENTS_COURTS_COUNT = "Total Count: "
 const val LABEL_OUTSTANDING_PAYMENTS__COURTS_TOTAL_AMOUNT = "Total Amount: "
 
 class OutstandingPaymentsCourtActivity : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -46,6 +49,7 @@ class OutstandingPaymentsCourtActivity : ComponentActivity() {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview
 @Composable
 fun OutstandingPaymentsCourtLayout() {
@@ -68,7 +72,7 @@ fun OutstandingPaymentsCourtLayout() {
             TextWidget(label = LABEL_OUTSTANDING_PAYMENTS__COURTS_TOTAL_AMOUNT, value = getTotalAmount(outstandingPaymentsCourt))
 
             outstandingPaymentsCourt.forEach { outstandingPaymentForCourt ->
-                OutstandingPaymentForCourtCardLayout(outstandingPaymentForCourt = outstandingPaymentForCourt)
+                OutstandingPaymentForCourtCardLayout(context = context, outstandingPaymentForCourt = outstandingPaymentForCourt)
             }
         }
     }

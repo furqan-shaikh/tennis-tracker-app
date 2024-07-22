@@ -91,6 +91,7 @@ import com.reversecurrent.tennistracker.models.SessionActionEnum
 import com.reversecurrent.tennistracker.models.SessionSetStatsActionEnum
 import com.reversecurrent.tennistracker.models.SetStatsSession
 import com.reversecurrent.tennistracker.utils.convertMillisToLocalDate
+import com.reversecurrent.tennistracker.views.widgets.SingleSelectDropDown
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -478,39 +479,16 @@ class AddSessionActivity: ComponentActivity() {
             }
 
             // Select Venue
-            Column {
-                Text(text = SESSION_SELECT_VENUE_LABEL)
-                ExposedDropdownMenuBox(
-                    expanded = isVenuesExpanded,
-                    onExpandedChange = { isVenuesExpanded = !isVenuesExpanded }
-                ) {
-
-                    TextField(
-                        value = selectedVenue.venueName,
-                        onValueChange = {},
-                        readOnly = true,
-                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isVenuesExpanded) },
-                        modifier = Modifier.menuAnchor()
-                    )
-
-                    ExposedDropdownMenu(
-                        expanded = isVenuesExpanded,
-                        onDismissRequest = { isVenuesExpanded = false }
-                    ) {
-                        venues.forEach { venue ->
-                            Row {
-                                DropdownMenuItem(
-                                    text = { Text(text = venue.venueName) },
-                                    onClick = {
-                                        selectedVenue = venue
-                                        isVenuesExpanded = false
-                                    }
-                                )
-                            }
-                        }
-                    }
-                }
-            }
+            SingleSelectDropDown(label = SESSION_SELECT_VENUE_LABEL,
+                options = venues.map { it.venueName },
+                value = selectedVenue.venueName,
+                isExpanded = isVenuesExpanded,
+                onValueChange = { value: String, expanded: Boolean ->
+                                    selectedVenue = venues.find { it.venueName == value }!!
+                                    isVenuesExpanded = false
+                                    },
+                onExpandedChange = { expanded: Boolean, -> isVenuesExpanded = !isVenuesExpanded },
+                onDismissRequest = { expanded: Boolean, -> isVenuesExpanded = false })
 
             Column {
                 Text(text = SESSION_SELECT_QOS_LABEL)

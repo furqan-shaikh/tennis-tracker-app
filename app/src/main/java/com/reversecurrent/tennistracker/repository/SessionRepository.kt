@@ -138,7 +138,8 @@ class SessionRepository {
             outstandingPaymentsCourts.add(OutstandingPaymentCourt(
                 sessionDate = fromEpoch(outstandingSessionPaymentForCourt.sessionDate, SESSION_DATE_FORMAT),
                 paymentAmount = outstandingSessionPaymentForCourt.sessionCost,
-                venueName = venue.venueName
+                venueName = venue.venueName,
+                sessionId = outstandingSessionPaymentForCourt.uid
             ))
 
         }

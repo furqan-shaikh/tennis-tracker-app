@@ -151,6 +151,7 @@ data class OutstandingPayment (
 
 data class OutstandingPaymentCourt (
     val paymentAmount: Float = 0.0f,
+    val sessionId: Long,
     val sessionDate: String,
     val venueName: String,
 )
