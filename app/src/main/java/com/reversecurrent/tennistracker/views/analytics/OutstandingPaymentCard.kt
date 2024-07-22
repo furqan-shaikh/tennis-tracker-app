@@ -63,7 +63,7 @@ fun ActionButtons(context: Context) {
     Row {
         Button(
             onClick = {
-                      launchApp(context= context, packageName = "com.whatsapp")
+                      launchApp(context= context, packageName = "com.phonepe.app")
             },
             colors = ButtonDefaults.buttonColors(containerColor = Color.Black),
             contentPadding = PaddingValues(16.dp),
