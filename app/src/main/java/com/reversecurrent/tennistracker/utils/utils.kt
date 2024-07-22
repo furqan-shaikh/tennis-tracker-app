@@ -79,3 +79,10 @@ fun getDurationString(epoch: Long, duration: Float): String {
     return "$formattedStartTime - $formattedEndTime"
 
 }
+
+fun launchApp(context: android.content.Context, packageName: String) {
+    val intent = context.packageManager.getLaunchIntentForPackage(packageName)
+        ?: // App is not installed
+        return
+    context.startActivity(intent)
+}

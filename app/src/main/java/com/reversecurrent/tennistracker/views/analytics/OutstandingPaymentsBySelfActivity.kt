@@ -72,7 +72,7 @@ fun OutstandingPaymentsLayout() {
             TextWidget(label = LABEL_OUTSTANDING_PAYMENTS_TOTAL_AMOUNT, value = getTotalAmount(outstandingPayments))
             
             outstandingPayments.forEach { outstandingPayment -> 
-                OutstandingPaymentCardLayout(outstandingPayment = outstandingPayment)
+                OutstandingPaymentCardLayout(context = context, outstandingPayment = outstandingPayment)
             }
         }
     }

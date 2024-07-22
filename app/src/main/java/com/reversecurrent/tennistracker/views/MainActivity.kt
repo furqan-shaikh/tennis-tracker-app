@@ -2,7 +2,6 @@ package com.reversecurrent.tennistracker.views
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
@@ -16,15 +15,13 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.DatePicker
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -34,6 +31,7 @@ import com.reversecurrent.tennistracker.ui.theme.TennisTrackerTheme
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import com.reversecurrent.tennistracker.views.analytics.MainAnalyticsActivity
+import com.reversecurrent.tennistracker.views.payments.MainPaymentsActivity
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,18 +61,20 @@ fun MainScreenLayout() {
         TennisTrackerButton("Add", Icons.Default.Add, "Add")
         TennisTrackerButton("List", Icons.Default.List, "List")
         TennisTrackerButton("Analytics", Icons.Default.List, "Analytics")
+        TennisTrackerButton(text = "Payments", icon = Icons.Default.ShoppingCart, activityType = "Payments")
     }
 }
 
 @Composable
-fun TennisTrackerButton(text: String, icon: ImageVector, activity_type: String) {
+fun TennisTrackerButton(text: String, icon: ImageVector, activityType: String) {
     val context = LocalContext.current
     Button(
         onClick = {
-            when(activity_type){
+            when(activityType){
                 "Add" -> navigateToAddEntitiesActivity(context=context)
                 "List" -> navigateToListEntitiesActivity(context=context)
                 "Analytics" -> navigateToAnalyticsActivity(context=context)
+                "Payments" -> navigateToPaymentsActivity(context=context)
             }
         },
         modifier = Modifier.fillMaxWidth(),
@@ -103,16 +103,7 @@ fun navigateToAnalyticsActivity(context: android.content.Context) {
     context.startActivity(intent)
 }
 
-@Composable
-fun ShowToast(text: String) {
-    val context = LocalContext.current
-    Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun MyDatetimePicker() {
-    val context = LocalContext.current
-    val dateState = rememberDatePickerState()
-    DatePicker(state = dateState)
+fun navigateToPaymentsActivity(context: android.content.Context) {
+    val intent = Intent(context, MainPaymentsActivity::class.java)
+    context.startActivity(intent)
 }

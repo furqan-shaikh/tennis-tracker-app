@@ -30,6 +30,7 @@
         <activity android:name=".views.sessions.ListSessionsActivity" />
         <activity android:name=".views.sessions.UpsertSetStatsActivity" />
         <activity android:name=".views.analytics.TennisStatsBasicActivity" />
+        <activity android:name=".views.payments.MainPaymentsActivity" />
         <activity
             android:name=".views.MainActivity"
             android:exported="true"
