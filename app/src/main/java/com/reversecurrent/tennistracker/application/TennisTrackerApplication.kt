@@ -27,6 +27,7 @@ class TennisTrackerApplication : Application() {
             val result = PlayerRepository().checkAndAddSelfPlayer(context)
             withContext(Dispatchers.Main) {
                 Log.d("TennisTrackerApplication", "checkAndAddSelfPlayer: $result")
+
             }
         }
     }

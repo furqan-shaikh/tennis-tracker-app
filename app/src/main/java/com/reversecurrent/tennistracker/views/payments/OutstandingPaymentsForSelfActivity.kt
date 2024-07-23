@@ -1,4 +1,4 @@
-package com.reversecurrent.tennistracker.views.analytics
+package com.reversecurrent.tennistracker.views.payments
 
 
 import android.os.Bundle
@@ -28,10 +28,8 @@ import com.reversecurrent.tennistracker.ui.theme.TennisTrackerTheme
 import com.reversecurrent.tennistracker.views.widgets.TextWidget
 import kotlinx.coroutines.runBlocking
 
-const val LABEL_OUTSTANDING_PAYMENTS_COUNT = "Total Count: "
-const val LABEL_OUTSTANDING_PAYMENTS_TOTAL_AMOUNT = "Total Amount: "
 
-class OutstandingPaymentsToSelfActivity : ComponentActivity() {
+class OutstandingPaymentsBySelfActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -40,7 +38,7 @@ class OutstandingPaymentsToSelfActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    OutstandingPaymentsLayout()
+                    OutstandingPaymentsBySelfLayout()
                 }
             }
         }
@@ -49,13 +47,13 @@ class OutstandingPaymentsToSelfActivity : ComponentActivity() {
 
 @Preview
 @Composable
-fun OutstandingPaymentsLayout() {
+fun OutstandingPaymentsBySelfLayout() {
     val context = LocalContext.current
     var outstandingPayments by remember { mutableStateOf(emptyList<OutstandingPayment>()) }
     LaunchedEffect(Unit) {
         runBlocking {
             // Fetch the list of outstanding payments asynchronously
-            outstandingPayments = SessionRepository().getAllOutstandingPaymentsToSelf(context = context)
+            outstandingPayments = SessionRepository().getAllOutstandingPaymentsBySelf(context = context)
         }
     }
     Column(
@@ -76,13 +74,5 @@ fun OutstandingPaymentsLayout() {
             }
         }
     }
-}
-
-fun getTotalAmount(outstandingPayments: List<OutstandingPayment>): String {
-    var totalAmount = 0.0f
-    for (outstandingPayment in outstandingPayments) {
-        totalAmount += outstandingPayment.paymentAmount
-    }
-    return totalAmount.toString()
 }
 

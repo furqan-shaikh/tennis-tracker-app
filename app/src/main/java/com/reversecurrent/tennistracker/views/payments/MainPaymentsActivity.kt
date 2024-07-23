@@ -1,9 +1,5 @@
 package com.reversecurrent.tennistracker.views.payments
 
-import com.reversecurrent.tennistracker.views.analytics.OutstandingPaymentsBySelfActivity
-import com.reversecurrent.tennistracker.views.analytics.OutstandingPaymentsCourtActivity
-import com.reversecurrent.tennistracker.views.analytics.OutstandingPaymentsToSelfActivity
-
 
 import android.content.Intent
 import android.os.Bundle

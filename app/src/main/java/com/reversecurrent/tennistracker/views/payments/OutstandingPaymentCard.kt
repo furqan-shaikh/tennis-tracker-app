@@ -1,4 +1,4 @@
-package com.reversecurrent.tennistracker.views.analytics
+package com.reversecurrent.tennistracker.views.payments
 
 
 
@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -18,15 +16,12 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.reversecurrent.tennistracker.models.OutstandingPayment
-import com.reversecurrent.tennistracker.models.Player
 import com.reversecurrent.tennistracker.utils.launchApp
 import com.reversecurrent.tennistracker.views.widgets.TextWidget
-import kotlinx.coroutines.launch
 
 const val PLAYER_NAME_LABEL = "Player Name: "
 const val SESSION_DATE_LABEL = "Session Date: "

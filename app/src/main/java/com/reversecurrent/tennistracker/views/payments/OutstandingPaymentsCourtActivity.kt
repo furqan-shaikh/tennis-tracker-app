@@ -1,4 +1,4 @@
-package com.reversecurrent.tennistracker.views.analytics
+package com.reversecurrent.tennistracker.views.payments
 
 
 

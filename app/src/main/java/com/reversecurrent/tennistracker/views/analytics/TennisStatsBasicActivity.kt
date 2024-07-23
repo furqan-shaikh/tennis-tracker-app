@@ -30,6 +30,9 @@ import kotlinx.coroutines.runBlocking
 const val LABEL_TOTAL_HOURS_PLAYED = "Total Hours Played: "
 const val LABEL_TOTAL_STEPS_TAKEN = "Total Steps Taken: "
 const val LABEL_TOTAL_SHOTS_PLAYED = "Total Shots Played: "
+const val LABEL_TOTAL_SETS_PLAYED = "Total Sets Played: "
+const val LABEL_TOTAL_SETS_WON_BY_SELF = "Total Sets Won By Self: "
+const val LABEL_SETS_WON_PERCENTAGE = "Sets Won Percentage: "
 
 class TennisStatsBasicActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,6 +74,9 @@ fun TennisStatsBasicLayout() {
             TextWidget(label = LABEL_TOTAL_HOURS_PLAYED, value = tennisStats.totalHoursPlayed.toString())
             TextWidget(label = LABEL_TOTAL_STEPS_TAKEN, value = tennisStats.totalStepsTaken.toString())
             TextWidget(label = LABEL_TOTAL_SHOTS_PLAYED, value = tennisStats.totalShotsPlayed.toString())
+            TextWidget(label = LABEL_TOTAL_SETS_PLAYED, value = tennisStats.totalSetsPlayed.toString())
+            TextWidget(label = LABEL_TOTAL_SETS_WON_BY_SELF, value = tennisStats.totalSetsWonBySelf.toString())
+            TextWidget(label = LABEL_SETS_WON_PERCENTAGE, value = "${tennisStats.setWinsPercentage}%")
         }
     }
 }

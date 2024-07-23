@@ -185,7 +185,8 @@ data class TennisAnalytics(
     val playedWithTheMost: PlayerPlayedWith = PlayerPlayedWith("", 0, 0),
     val playedWithTheLeast: PlayerPlayedWith = PlayerPlayedWith("", 0, 0),
     val totalSetsPlayed: Int = 0,
-    val totalSetsWon: Int = 0,
+    val totalSetsWonBySelf: Int = 0,
+    val setWinsPercentage: Number = 0f,
 )
 
 

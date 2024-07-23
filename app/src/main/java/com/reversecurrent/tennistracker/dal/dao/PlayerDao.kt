@@ -27,4 +27,8 @@ interface PlayerDao {
 
     @Query("SELECT EXISTS(SELECT 1 FROM $PLAYER_TABLE_NAME WHERE $PLAYER_TABLE_NAME_COLUMN = :name)")
     suspend fun selfPlayerExists(name: String): Boolean
+
+    @Query("SELECT * FROM $PLAYER_TABLE_NAME WHERE $PLAYER_TABLE_NAME_COLUMN = :name")
+    suspend fun getPlayerByName(name: String): PlayerEntity
+
 }

@@ -1,4 +1,4 @@
-package com.reversecurrent.tennistracker.views.analytics
+package com.reversecurrent.tennistracker.views.payments
 
 import android.content.Context
 import android.content.Intent
@@ -21,7 +21,6 @@ import com.reversecurrent.tennistracker.models.SESSION_ACTION_INTENT_EXTRA
 import com.reversecurrent.tennistracker.models.SESSION_INTENT_EXTRA
 import com.reversecurrent.tennistracker.models.SessionActionEnum
 import com.reversecurrent.tennistracker.repository.SessionRepository
-import com.reversecurrent.tennistracker.utils.launchApp
 import com.reversecurrent.tennistracker.views.sessions.AddSessionActivity
 import com.reversecurrent.tennistracker.views.widgets.ClickableTextWidget
 import com.reversecurrent.tennistracker.views.widgets.TextWidget

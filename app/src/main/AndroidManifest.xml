@@ -27,9 +27,9 @@
         <activity android:name=".views.players.ListPlayersActivity"/>
         <activity android:name=".views.venues.ListVenuesActivity"/>
         <activity android:name=".views.analytics.MainAnalyticsActivity"/>
-        <activity android:name=".views.analytics.OutstandingPaymentsToSelfActivity"/>
-        <activity android:name=".views.analytics.OutstandingPaymentsBySelfActivity"/>
-        <activity android:name=".views.analytics.OutstandingPaymentsCourtActivity"/>
+        <activity android:name=".views.payments.OutstandingPaymentsToSelfActivity"/>
+        <activity android:name=".views.payments.OutstandingPaymentsBySelfActivity"/>
+        <activity android:name=".views.payments.OutstandingPaymentsCourtActivity"/>
         <activity android:name=".views.sessions.ListSessionsActivity" />
         <activity android:name=".views.sessions.UpsertSetStatsActivity" />
         <activity android:name=".views.analytics.TennisStatsBasicActivity" />
