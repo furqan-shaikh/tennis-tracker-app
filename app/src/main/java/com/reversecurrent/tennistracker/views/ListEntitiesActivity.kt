@@ -65,7 +65,7 @@ fun ListEntitiesScreenLayout() {
     ) {
         ListEntitiesButton("List Sessions", Icons.Default.Send)
         ListEntitiesButton("List Players", Icons.Default.Person)
-        ListEntitiesButton("List Sessions", Icons.Default.LocationOn)
+        ListEntitiesButton("List Venues", Icons.Default.LocationOn)
     }
 }
 
