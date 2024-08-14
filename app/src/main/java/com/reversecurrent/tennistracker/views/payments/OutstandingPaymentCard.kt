@@ -28,7 +28,7 @@ const val SESSION_DATE_LABEL = "Session Date: "
 const val AMOUNT_DUE_LABEL = "Amount Due: "
 
 @Composable
-fun OutstandingPaymentCardLayout(context: Context, outstandingPayment: OutstandingPayment) {
+fun OutstandingPaymentCardLayout(context: Context, outstandingPayment: OutstandingPayment, showPayment: Boolean = true) {
     Column{
         ElevatedCard(
             elevation = CardDefaults.cardElevation(
@@ -40,7 +40,7 @@ fun OutstandingPaymentCardLayout(context: Context, outstandingPayment: Outstandi
         ) {
             CardContent(outstandingPayment = outstandingPayment)
         }
-        ActionButtons(context = context)
+        ActionButtons(context = context, showPayment)
     }
 }
 
@@ -54,18 +54,21 @@ fun CardContent(outstandingPayment: OutstandingPayment) {
 }
 
 @Composable
-fun ActionButtons(context: Context) {
+fun ActionButtons(context: Context, showPayment: Boolean) {
     Row {
-        Button(
-            onClick = {
-                      launchApp(context= context, packageName = "com.phonepe.app")
-            },
-            colors = ButtonDefaults.buttonColors(containerColor = Color.Black),
-            contentPadding = PaddingValues(16.dp),
-            modifier = Modifier.padding(16.dp)
-        ) {
-            Icon(Icons.Default.ShoppingCart, contentDescription = null) // Display icon
+        if (showPayment) {
+            Button(
+                onClick = {
+                    launchApp(context= context, packageName = "com.phonepe.app")
+                },
+                colors = ButtonDefaults.buttonColors(containerColor = Color.Black),
+                contentPadding = PaddingValues(16.dp),
+                modifier = Modifier.padding(16.dp)
+            ) {
+                Icon(Icons.Default.ShoppingCart, contentDescription = null) // Display icon
+            }
         }
+
     }
 }
 

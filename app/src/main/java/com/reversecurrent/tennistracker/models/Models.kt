@@ -174,16 +174,17 @@ data class SetStatsSession (
 ): Parcelable
 
 data class PlayerPlayedWith(
-    val playerName: String,
-    val playerId: Long,
-    val numberOfTimesPlayed: Int
+    var playerName: String = "",
+    var playerId: Long = 0,
+    var numberOfTimesPlayed: Int = 0,
+    var totalHoursPlayed: Float = 0f
 )
 data class TennisAnalytics(
     val totalHoursPlayed: Float = 0f,
     val totalShotsPlayed: Int = 0,
     val totalStepsTaken: Int = 0,
-    val playedWithTheMost: PlayerPlayedWith = PlayerPlayedWith("", 0, 0),
-    val playedWithTheLeast: PlayerPlayedWith = PlayerPlayedWith("", 0, 0),
+    val playedWithTheMost: PlayerPlayedWith = PlayerPlayedWith(),
+    val playedWithTheLeast: PlayerPlayedWith = PlayerPlayedWith(),
     val totalSetsPlayed: Int = 0,
     val totalSetsWonBySelf: Int = 0,
     val setWinsPercentage: Number = 0f,
