@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.reversecurrent.tennistracker.models.PlayerPlayedWith
 import com.reversecurrent.tennistracker.models.TennisAnalytics
 import com.reversecurrent.tennistracker.repository.TennisAnalyticsRepository
 import com.reversecurrent.tennistracker.ui.theme.TennisTrackerTheme
@@ -33,6 +34,8 @@ const val LABEL_TOTAL_SHOTS_PLAYED = "Total Shots Played: "
 const val LABEL_TOTAL_SETS_PLAYED = "Total Sets Played: "
 const val LABEL_TOTAL_SETS_WON_BY_SELF = "Total Sets Won By Self: "
 const val LABEL_SETS_WON_PERCENTAGE = "Sets Won Percentage: "
+const val LABEL_MOST_PLAYED_WITH = "Most Played With: "
+const val LABEL_LEAST_PLAYED_WITH = "Least Played With: "
 
 class TennisStatsBasicActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -77,6 +80,14 @@ fun TennisStatsBasicLayout() {
             TextWidget(label = LABEL_TOTAL_SETS_PLAYED, value = tennisStats.totalSetsPlayed.toString())
             TextWidget(label = LABEL_TOTAL_SETS_WON_BY_SELF, value = tennisStats.totalSetsWonBySelf.toString())
             TextWidget(label = LABEL_SETS_WON_PERCENTAGE, value = "${tennisStats.setWinsPercentage}%")
+            TextWidget(label = LABEL_MOST_PLAYED_WITH, value = getPlayedWithString(tennisStats.playedWithTheMost))
+            TextWidget(label = LABEL_LEAST_PLAYED_WITH, value = getPlayedWithString(tennisStats.playedWithTheLeast))
         }
     }
+}
+
+fun getPlayedWithString(playerPlayedWith: PlayerPlayedWith): String {
+    return "${playerPlayedWith.playerName}," +
+            " ${playerPlayedWith.numberOfTimesPlayed} times," +
+            " ${playerPlayedWith.totalHoursPlayed} hours"
 }

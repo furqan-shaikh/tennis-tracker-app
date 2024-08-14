@@ -9,5 +9,6 @@ data class BasicTennisAnalyticsEntity(
 data class PlayerPlayedWithEntity(
     val playerName: String,
     val playerId: Long,
-    val numberOfTimesPlayed: Int
+    val numberOfTimesPlayed: Int,
+    val totalHoursPlayed: Float = 0f,
 )

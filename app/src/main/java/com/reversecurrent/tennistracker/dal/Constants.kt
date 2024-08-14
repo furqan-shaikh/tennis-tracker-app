@@ -1,6 +1,7 @@
 package com.reversecurrent.tennistracker.dal
 
 const val DATABASE_NAME = "tennistrackerdb"
+
 const val PLAYER_TABLE_NAME = "players"
 const val PLAYER_TABLE_NAME_COLUMN = "player_name"
 const val PLAYER_TABLE_MOBILE_NUMBER_COLUMN = "mobile_number"
@@ -46,6 +47,8 @@ const val SESSION_PAYMENT_TABLE_SESSION_ID_COLUMN = "session_payment_session_id"
 const val SESSION_PAYMENT_TABLE_PLAYER_ID_COLUMN = "session_payment_player_id"
 
 const val SESSION_PLAYER_JOIN_TABLE_NAME = "player_session_join"
+const val SESSION_PLAYER_JOIN_TABLE_SESSION_ID_COLUMN = "sessionId"
+const val SESSION_PLAYER_JOIN_TABLE_PLAYER_ID_COLUMN = "playerId"
 
 const val SESSION_SET_STATS_TABLE_NAME = "session_set_stats"
 const val SESSION_SET_STATS_TABLE_SESSION_ID_COLUMN = "session_id"
